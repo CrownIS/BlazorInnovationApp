@@ -1,0 +1,1552 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>ImportExport5010_997_999</name>
+    </assembly>
+    <members>
+        <member name="T:ImportExport5010_997_999.NamespaceDoc">
+            <summary>
+                The <see cref="N:ImportExport5010_997_999" /> namespace contains base classes and common core components for all 997
+                and 999 syntax validators for 5010
+                transactions. Concrete syntax validators for a given transaction will be defined in the transaction's library.
+                Example: ImportExport5010_837.dll will contain the 999 syntax validator for the 837s.
+            </summary>
+        </member>
+        <member name="T:ImportExport5010_997_999.TransSet999.Advanced.IImplementAckLoopProcessor">
+            <summary>
+                Interface for double-dispatch visitor pattern to process loops, with post-processing.
+            </summary>
+        </member>
+        <member name="M:ImportExport5010_997_999.TransSet999.Advanced.IImplementAckLoopProcessor.PostProcess">
+            <summary>
+                Should be called once for completion code, after all the enumerated loops have been passed to Process().
+            </summary>
+        </member>
+        <member name="T:ImportExport5010_997_999.TransSet999.ImplementAckStrictBatchReader">
+            <summary>
+            </summary>
+        </member>
+        <member name="P:ImportExport5010_997_999.TransSet999.ImplementationAckAdapter.LpISA">
+            <summary>
+                Virtual Loop for Interchange Header
+            </summary>
+        </member>
+        <member name="P:ImportExport5010_997_999.TransSet999.ImplementationAckAdapter.LpGS">
+            <summary>
+                Virtual Loop for Functional Group Header
+            </summary>
+        </member>
+        <member name="P:ImportExport5010_997_999.TransSet999.ImplementationAckAdapter.LpST">
+            <summary>
+                Virtual Loop for 999 Transaction Header
+            </summary>
+        </member>
+        <member name="P:ImportExport5010_997_999.TransSet999.ImplementationAckAdapter.LpAK1">
+            <summary>
+                Virtual Loop for Functional Group Response Header
+            </summary>
+        </member>
+        <member name="P:ImportExport5010_997_999.TransSet999.ImplementationAckAdapter.Lp2000TransResponses">
+            <summary>
+                TransactionResponses AK2-IK5 May be null if none exist
+            </summary>
+        </member>
+        <member name="P:ImportExport5010_997_999.TransSet999.ImplementationAckAdapter.LpAK9">
+            <summary>
+                Virtual Loop for Functional Group Response Trailer
+            </summary>
+        </member>
+        <member name="P:ImportExport5010_997_999.TransSet999.ImplementationAckAdapter.LpSE">
+            <summary>
+                Virtual Loop for 999 Transaction Trailer
+            </summary>
+        </member>
+        <member name="P:ImportExport5010_997_999.TransSet999.ImplementationAckAdapter.LpGE">
+            <summary>
+                Virtual Loop for Group Trailer
+            </summary>
+        </member>
+        <member name="P:ImportExport5010_997_999.TransSet999.ImplementationAckAdapter.LpIEA">
+            <summary>
+                Virtual Loop for Interchange Trailer
+            </summary>
+        </member>
+        <member name="T:ImportExport5010_997_999.TransSet999.ImplementationAcknowledgment">
+            <summary>
+                Currently based on 005010X231A1A1
+            </summary>
+        </member>
+        <member name="P:ImportExport5010_997_999.TransSet999.ImplementationAcknowledgment.SendElectronic">
+            <summary>
+                Default is true (for 837 EDI source), may set false for programmatically constructed
+                claim.
+            </summary>
+        </member>
+        <member name="M:ImportExport5010_997_999.TransSet999.ImplementationAcknowledgment.MakeDeepCopy">
+            <summary>
+                Makes a totally independent copy.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:ImportExport5010_997_999.TransSet999.Loops.ImplementAckLoop.ProcessWith(ImportExport5010_997_999.TransSet999.Advanced.IImplementAckLoopProcessor)">
+            <summary>
+                For implementing part of the double-dispatch visitor pattern.
+            </summary>
+            <param name="processor"></param>
+        </member>
+        <member name="M:ImportExport5010_997_999.TransSet999.Loops.ImplementAckLoopFactory.CreateLoop(ImportExport5010_997_999.TransSet999.Loops.ImplementAckLoopType,System.Collections.Generic.IEnumerable{System.String},EDIX12Core.EDI_Delimiters,EDIX12Core.EDIControlInfo)">
+            <summary>
+                Creates instance of instituional loop per the supplied loop type, loaded
+                with parsed data.
+            </summary>
+            <param name="loopType">Enum value from the 837I loop detector</param>
+        </member>
+        <member name="M:ImportExport5010_997_999.TransSet999.Loops.ImplementAckLoopFactory.CreateLoop(ImportExport5010_997_999.TransSet999.Loops.ImplementAckLoopType)">
+            <summary>
+                Creates instance of service review loop per the supplied loop type.
+            </summary>
+            <param name="loopType">Enum value from the 837I loop detector</param>
+        </member>
+        <member name="T:ImportExport5010_997_999.TransSet999.Loops.ImplementAckLoopType">
+            <summary>
+                Enumeration of 4010 835 EDI Loop Types for Remittance (Payment Advice).
+            </summary>
+        </member>
+        <member name="F:ImportExport5010_997_999.TransSet999.Loops.ImplementAckLoopType.None">
+            <summary> Dummy 'null' value for default.</summary>
+        </member>
+        <member name="F:ImportExport5010_997_999.TransSet999.Loops.ImplementAckLoopType.LoopIntchgHdr">
+            <summary>INTERCHANGE HEADER - optional virtual loop - for the ISA segment </summary>
+        </member>
+        <member name="F:ImportExport5010_997_999.TransSet999.Loops.ImplementAckLoopType.LoopGroupHdr">
+            <summary>FUNCTIONAL GROUP HEADER - optional virtual loop - for the GS segment </summary>
+        </member>
+        <member name="F:ImportExport5010_997_999.TransSet999.Loops.ImplementAckLoopType.LoopTransactHdr">
+            <summary>TRANSACTION HEADER - virtual loop - for ST and AK1 segments</summary>
+        </member>
+        <member name="F:ImportExport5010_997_999.TransSet999.Loops.ImplementAckLoopType.LoopIntchgTrlr">
+            <summary>INTERCHANGE TRAILER - virtual loop - for the IEA segment </summary>
+        </member>
+        <member name="F:ImportExport5010_997_999.TransSet999.Loops.ImplementAckLoopType.LoopGroupTrlr">
+            <summary>FUNCTIONAL GROUP TRAILER - virtual loop - for the GE segment </summary>
+        </member>
+        <member name="F:ImportExport5010_997_999.TransSet999.Loops.ImplementAckLoopType.LoopTransactTrlr">
+            <summary>TRANSACTION TRAILER - virtual loop - for AK9 and SE segment</summary>
+        </member>
+        <member name="F:ImportExport5010_997_999.TransSet999.Loops.ImplementAckLoopType.LoopGrpRespHdr">
+            <summary>Virtual GROUP RESPONSE HEADER (AK1)</summary>
+        </member>
+        <member name="F:ImportExport5010_997_999.TransSet999.Loops.ImplementAckLoopType.Loop2000Hdr">
+            <summary>TRANSACTION RESPONSE (just header AK2)</summary>
+        </member>
+        <member name="F:ImportExport5010_997_999.TransSet999.Loops.ImplementAckLoopType.Loop2100">
+            <summary>ERROR IDENTIFICATION (for SEGMENT), IK3 start</summary>
+        </member>
+        <member name="F:ImportExport5010_997_999.TransSet999.Loops.ImplementAckLoopType.Loop2110">
+            <summary>IMPLEMENTATION DATA ELEMENT NOTE, IK4 start</summary>
+        </member>
+        <member name="F:ImportExport5010_997_999.TransSet999.Loops.ImplementAckLoopType.Loop2000Trlr">
+            <summary>Virtual TRANSACTION RESPONSE TRAILER (IK5)</summary>
+        </member>
+        <member name="F:ImportExport5010_997_999.TransSet999.Loops.ImplementAckLoopType.LoopGrpRespTrlr">
+            <summary>Virtual GROUP RESPONSE TRAILER (AK9)</summary>
+        </member>
+        <member name="F:ImportExport5010_997_999.TransSet999.Loops.ImplementAckLoopType.LoopError">
+            <summary>Cannot identify loop.</summary>
+        </member>
+        <member name="T:ImportExport5010_997_999.TransSet999.Loops.Loop2000Header">
+            <summary>
+                Loop 2000 Transaction Set Response Header
+            </summary>
+        </member>
+        <member name="T:ImportExport5010_997_999.TransSet999.Loops.Loop2000Trailer">
+            <summary>
+                Virtual Loop 2000 Transaction Set Response Trailer
+            </summary>
+        </member>
+        <member name="T:ImportExport5010_997_999.TransSet999.Loops.Loop2100">
+            <summary>
+                Segment Error
+            </summary>
+        </member>
+        <member name="F:ImportExport5010_997_999.TransSet999.Loops.Loop2100.CTXbusID">
+            <summary>
+                Business unit ID, ex. CLM01 pat acct number
+            </summary>
+        </member>
+        <member name="T:ImportExport5010_997_999.TransSet999.Loops.Loop2110">
+            <summary>
+                Implementation Data Element Note
+            </summary>
+        </member>
+        <member name="T:ImportExport5010_997_999.TransSet999.Loops.LoopGroupHeader">
+            <summary>
+                Virtual loop for holding 835 functional group header info (storing GS segment)
+            </summary>
+        </member>
+        <member name="T:ImportExport5010_997_999.TransSet999.Loops.LoopGroupTrailer">
+            <summary>
+                Virtual loop for holding 999 functional group trailer info (storing GE segment)
+            </summary>
+        </member>
+        <member name="T:ImportExport5010_997_999.TransSet999.Loops.LoopGrpResponseHeader">
+            <summary>
+                Virtual loop for holding 999 group response header info (starting with AK1 segment)
+            </summary>
+        </member>
+        <member name="T:ImportExport5010_997_999.TransSet999.Loops.LoopGrpResponseTrailer">
+            <summary>
+                Virtual loop for holding 999 group response trailer info (storing AK9 segment)
+            </summary>
+        </member>
+        <member name="T:ImportExport5010_997_999.TransSet999.Loops.LoopIntchgHeader">
+            <summary>
+                Virtual loop for holding 835 functional group header info (storing ISA segment)
+            </summary>
+        </member>
+        <member name="T:ImportExport5010_997_999.TransSet999.Loops.LoopIntchgTrailer">
+            <summary>
+                Virtual loop for holding 999 interchange trailer info (storing IEA segment)
+            </summary>
+        </member>
+        <member name="T:ImportExport5010_997_999.TransSet999.Loops.LoopTransHeader">
+            <summary>
+                Virtual loop for holding 999 transaction header info (starting with ST segment)
+            </summary>
+        </member>
+        <member name="T:ImportExport5010_997_999.TransSet999.Loops.LoopTransTrailer">
+            <summary>
+                Virtual loop for holding 999 transaction set trailer info (storing SE segment)
+            </summary>
+        </member>
+        <member name="T:ImportExport5010_997_999.TransSet999.Loops.SegmentAK1">
+            <summary>
+                999 segment: Functional Group Response Header
+            </summary>
+        </member>
+        <member name="T:ImportExport5010_997_999.TransSet999.Loops.SegmentAK2">
+            <summary>
+                999 segment: Transaction Set Response Header
+            </summary>
+        </member>
+        <member name="T:ImportExport5010_997_999.TransSet999.Loops.SegmentAK9">
+            <summary>
+                999 segment: FUNCTIONAL GROUP RESPONSE TRAILER
+            </summary>
+        </member>
+        <member name="F:ImportExport5010_997_999.TransSet999.Loops.SegmentAK9.AK901_GroupAckCode">
+            <summary>
+                Overall aknowledgment status
+            </summary>
+        </member>
+        <member name="F:ImportExport5010_997_999.TransSet999.Loops.SegmentAK9.AK902_NumInclTrans">
+            <summary>
+                Number of source transaction sets in the acknowledged group
+            </summary>
+        </member>
+        <member name="F:ImportExport5010_997_999.TransSet999.Loops.SegmentAK9.AK903_NumRcvTrans">
+            <summary>
+                Number of source transaction sets actually received
+            </summary>
+        </member>
+        <member name="F:ImportExport5010_997_999.TransSet999.Loops.SegmentAK9.AK904_NumAccptTrans">
+            <summary>
+                Number of source transaction sets accepted
+            </summary>
+        </member>
+        <member name="F:ImportExport5010_997_999.TransSet999.Loops.SegmentAK9.AK905_GrpSynErrCode">
+            <summary>
+                Functional Group Syntax Error Code
+            </summary>
+        </member>
+        <member name="F:ImportExport5010_997_999.TransSet999.Loops.SegmentAK9.AK906_GrpSynErrCode">
+            <summary>
+                Functional Group Syntax Error Code
+            </summary>
+        </member>
+        <member name="F:ImportExport5010_997_999.TransSet999.Loops.SegmentAK9.AK907_GrpSynErrCode">
+            <summary>
+                Functional Group Syntax Error Code
+            </summary>
+        </member>
+        <member name="F:ImportExport5010_997_999.TransSet999.Loops.SegmentAK9.AK908_GrpSynErrCode">
+            <summary>
+                Functional Group Syntax Error Code
+            </summary>
+        </member>
+        <member name="F:ImportExport5010_997_999.TransSet999.Loops.SegmentAK9.AK909_GrpSynErrCode">
+            <summary>
+                Functional Group Syntax Error Code
+            </summary>
+        </member>
+        <member name="T:ImportExport5010_997_999.TransSet999.Loops.SegmentCTX">
+            <summary>
+                999 segment: CONTEXT - Segment, Business, Element  contexts
+                For Business Context only CTX01 is used (biz unit id)
+            </summary>
+        </member>
+        <member name="F:ImportExport5010_997_999.TransSet999.Loops.SegmentCTX.CTX03_SegPosInTrans">
+            <summary>
+                Transaction position starts with ST = pos 1
+            </summary>
+        </member>
+        <member name="F:ImportExport5010_997_999.TransSet999.Loops.SegmentCTX.CTX04_LoopIDCode">
+            <summary>
+                Only use first 4 digits/chars of loop id in strict 999.
+            </summary>
+        </member>
+        <member name="F:ImportExport5010_997_999.TransSet999.Loops.SegmentCTX.CTX05_PosInSeg">
+            <summary>
+                Element position in segment: elem, component, repeater
+            </summary>
+        </member>
+        <member name="F:ImportExport5010_997_999.TransSet999.Loops.SegmentCTX.CTX06_ReferInSeg">
+            <summary>
+                Data Element Reference in segment
+            </summary>
+        </member>
+        <member name="T:ImportExport5010_997_999.TransSet999.Loops.SegmentIK3">
+            <summary>
+                999 segment: ERROR IDENTIFICATION (SEGMENT)
+            </summary>
+        </member>
+        <member name="F:ImportExport5010_997_999.TransSet999.Loops.SegmentIK3.IK301_SegIDCode">
+            <summary>
+                Segment name/id e.g. 'NM1'
+            </summary>
+        </member>
+        <member name="F:ImportExport5010_997_999.TransSet999.Loops.SegmentIK3.IK302_SegPosInTrans">
+            <summary>
+                Transaction position starts with ST = pos 1
+            </summary>
+        </member>
+        <member name="F:ImportExport5010_997_999.TransSet999.Loops.SegmentIK3.IK303_LoopIDCode">
+            <summary>
+                Only use first 4 digits/chars of loop id in strict 999.
+            </summary>
+        </member>
+        <member name="F:ImportExport5010_997_999.TransSet999.Loops.SegmentIK3.IK304_SegSynErrCode">
+            <summary>
+                Implementation Syntax Error Code
+            </summary>
+        </member>
+        <member name="T:ImportExport5010_997_999.TransSet999.Loops.SegmentIK4">
+            <summary>
+                999 segment: IMPLEMENTATION DATA ELEMENT NOTE
+            </summary>
+        </member>
+        <member name="F:ImportExport5010_997_999.TransSet999.Loops.SegmentIK4.IK401_PosInSeg">
+            <summary>
+                Element position in segment: elem, component, repeater - REQD
+            </summary>
+        </member>
+        <member name="F:ImportExport5010_997_999.TransSet999.Loops.SegmentIK4.IK402_DataElemRef">
+            <summary>
+                Data element reference number
+            </summary>
+        </member>
+        <member name="F:ImportExport5010_997_999.TransSet999.Loops.SegmentIK4.IK403_ElemSynErrCode">
+            <summary>
+                Implementation Syntax Error Code for Element - REQD
+            </summary>
+        </member>
+        <member name="F:ImportExport5010_997_999.TransSet999.Loops.SegmentIK4.IK404_BadData">
+            <summary>
+                Copy of Bad Data Element (if avail)
+            </summary>
+        </member>
+        <member name="T:ImportExport5010_997_999.TransSet999.Loops.SegmentIK5">
+            <summary>
+                999 segment: TRANSACTION SET RESPONSE TRAILER
+            </summary>
+        </member>
+        <member name="F:ImportExport5010_997_999.TransSet999.Loops.SegmentIK5.IK501_TransAckCode">
+            <summary>
+                Overall aknowledgment status
+            </summary>
+        </member>
+        <member name="F:ImportExport5010_997_999.TransSet999.Loops.SegmentIK5.IK502_TransSynErrCode">
+            <summary>
+                Implementation Syntax Error Code for Transaction Set
+            </summary>
+        </member>
+        <member name="F:ImportExport5010_997_999.TransSet999.Loops.SegmentIK5.IK503_TransSynErrCode">
+            <summary>
+                Implementation Syntax Error Code for Transaction Set
+            </summary>
+        </member>
+        <member name="F:ImportExport5010_997_999.TransSet999.Loops.SegmentIK5.IK504_TransSynErrCode">
+            <summary>
+                Implementation Syntax Error Code for Transaction Set
+            </summary>
+        </member>
+        <member name="F:ImportExport5010_997_999.TransSet999.Loops.SegmentIK5.IK505_TransSynErrCode">
+            <summary>
+                Implementation Syntax Error Code for Transaction Set
+            </summary>
+        </member>
+        <member name="F:ImportExport5010_997_999.TransSet999.Loops.SegmentIK5.IK506_TransSynErrCode">
+            <summary>
+                Implementation Syntax Error Code for Transaction Set
+            </summary>
+        </member>
+        <member name="T:ImportExport5010_997_999.TransSet999.Loops.SegmentSE">
+            <summary>
+                999 segment: Transaction Set Trailer - SE02 control number should match ST02.
+            </summary>
+        </member>
+        <member name="F:ImportExport5010_997_999.TransSet999.Loops.SegmentSE.SE01_NumInclSegments">
+            <summary></summary>
+        </member>
+        <member name="F:ImportExport5010_997_999.TransSet999.Loops.SegmentSE.SE02_TSControlNum">
+            <summary>Control Number</summary>
+        </member>
+        <member name="T:ImportExport5010_997_999.TransSet999.Loops.SegmentST">
+            <summary>
+                999 segment: Transaction Set Header
+            </summary>
+        </member>
+        <member name="F:ImportExport5010_997_999.TransSet999.Loops.SegmentST.ST03_TSVersion">
+            <summary>
+                Overrides/duplicates the GS08 EDI version for processing convenience.
+            </summary>
+        </member>
+        <member name="T:ImportExport5010_997_999.TransSet999.Loops.SegmentTA1">
+            <summary>
+                TA1 segment
+            </summary>
+        </member>
+        <member name="F:ImportExport5010_997_999.TransSet999.Loops.SegmentTA1.TA101_IntchgCtrlNum">
+            <summary></summary>
+        </member>
+        <member name="F:ImportExport5010_997_999.TransSet999.Loops.SegmentTA1.TA102_IntchgDate">
+            <summary></summary>
+        </member>
+        <member name="F:ImportExport5010_997_999.TransSet999.Loops.SegmentTA1.TA103_IntchgTime">
+            <summary></summary>
+        </member>
+        <member name="F:ImportExport5010_997_999.TransSet999.Loops.SegmentTA1.TA104_IntchgAckCode">
+            <summary></summary>
+        </member>
+        <member name="F:ImportExport5010_997_999.TransSet999.Loops.SegmentTA1.TA105_IntchgNoteCode">
+            <summary></summary>
+        </member>
+        <member name="T:ImportExport5010_997_999.ValidationTools.AcknowledgmentEDIWriter`2">
+            <summary>
+                Encapsulates operations for writing 997/999 EDI functional acknowledgment segments to destination
+                file or stream.
+            </summary>
+        </member>
+        <member name="F:ImportExport5010_997_999.ValidationTools.AcknowledgmentEDIWriter`2.ackAK103_203version">
+            <summary>
+                Value of the GS08 in the interchange we are responding to.
+                Currently assuming original file will all be same version.
+            </summary>
+        </member>
+        <member name="F:ImportExport5010_997_999.ValidationTools.AcknowledgmentEDIWriter`2.NumSegmentsInTrans">
+            <summary>
+                Track number of segments in current 997 wrapper transaction (NOT STs in source!),
+                used to write trailer SE.
+            </summary>
+        </member>
+        <member name="F:ImportExport5010_997_999.ValidationTools.AcknowledgmentEDIWriter`2.NumTransactions">
+            <summary>
+                Tracker per transaction for use in writing group trailer GE
+            </summary>
+        </member>
+        <member name="M:ImportExport5010_997_999.ValidationTools.AcknowledgmentEDIWriter`2.#ctor(ImportExport5010_997_999.ValidationTools.ValidationAckMode,System.IO.TextWriter,EDIX12Core.EDI_Delimiters,EDIX12Core.EDITransactionVersionInfo)">
+            <summary>
+                Param textWriter may be an opened StreamWriter (with optional text encoding) or a StringWriter.
+                Caller is responsible for flushing/closing/disposing stream when finished or upon an exception.
+            </summary>
+            <param name="textWriter"></param>
+        </member>
+        <member name="P:ImportExport5010_997_999.ValidationTools.AcknowledgmentEDIWriter`2.AllowLongLoopIDs">
+            <summary>
+                Set true to enable full 5 digit loop IDs in output (997/999 IGs only allow 4 digits.)
+                Default is FALSE.
+            </summary>
+        </member>
+        <member name="M:ImportExport5010_997_999.ValidationTools.AcknowledgmentEDIWriter`2.WriteInterchangeStart(System.String[])">
+            <summary>
+                Writes opening ISA for 997/999. Assumes ISA12 always '00501'.
+            </summary>
+        </member>
+        <member name="M:ImportExport5010_997_999.ValidationTools.AcknowledgmentEDIWriter`2.WriteAckTransactStart(System.String)">
+            <summary>
+                Writes the ST*997 or ST*999
+            </summary>
+            <param name="sourceGS"></param>
+            <param name="GroupControlNum"></param>
+            <param name="TransactControlNum"></param>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:ImportExport5010_997_999.ValidationTools.AcknowledgmentEDIWriter`2.WriteAckTransactEnd" -->
+        <member name="M:ImportExport5010_997_999.ValidationTools.AcknowledgmentEDIWriter`2.WriteGroupEnd">
+            <summary>
+                Writes closing GE for 997.
+            </summary>
+        </member>
+        <member name="M:ImportExport5010_997_999.ValidationTools.AcknowledgmentEDIWriter`2.WriteInterchangeEnd">
+            <summary>
+                Writes closing IEA for 997.
+            </summary>
+        </member>
+        <member name="M:ImportExport5010_997_999.ValidationTools.AcknowledgmentEDIWriter`2.WriteFunctGroupRespHdr(System.String)">
+            <summary>
+                Writes AK1 header at start of a group..
+            </summary>
+            <param name="grpcontrolnum"></param>
+        </member>
+        <member name="M:ImportExport5010_997_999.ValidationTools.AcknowledgmentEDIWriter`2.WriteTransactRespHdr(System.String,System.String)">
+            <summary>
+            </summary>
+            <param name="srcTransactType"></param>
+            <param name="srcTransControlNum"></param>
+        </member>
+        <member name="M:ImportExport5010_997_999.ValidationTools.AcknowledgmentEDIWriter`2.WriteSegmentError(System.String,System.Int64,`1,ImportExport5010_997_999.ValidationTools.SegmentSyntaxError)">
+            <summary>
+                Writes an AK3 Data Segment Note or IK3 Implementation note.  CAUTION: For Data Element Errors call
+                WriteElementErrors to create both the AK3 and AK4s.
+            </summary>
+        </member>
+        <member name="M:ImportExport5010_997_999.ValidationTools.AcknowledgmentEDIWriter`2.WriteElementErrors(System.String,System.Int64,`1,System.Collections.Generic.IEnumerable{ImportExport5010_997_999.ValidationTools.ElementError})">
+            <summary>
+                Writes a header AK3/IK3 (with seg error 8) and generates the AK4s/IK4s for a segment's syntax data element error
+                collection.
+            </summary>
+        </member>
+        <member name="M:ImportExport5010_997_999.ValidationTools.AcknowledgmentEDIWriter`2.WriteElementErrors(System.String,System.Int64,`1,System.Collections.Generic.IEnumerable{ImportExport5010_997_999.ValidationTools.SituationalElementError{`1}})">
+            <summary>
+                Writes IK3 with IK4s.
+                Overload for situational (rather than syntax) implementation errors,
+                each of which may have accompanying situational trigger information.
+                Illegal to call this overload when Validation Mode is 997.
+            </summary>
+        </member>
+        <member name="M:ImportExport5010_997_999.ValidationTools.AcknowledgmentEDIWriter`2.WriteTransactRespTrlr(ImportExport5010_997_999.ValidationTools.TransSetAckCode,System.Collections.Generic.IEnumerable{ImportExport5010_997_999.ValidationTools.TransactSyntaxError})">
+            <summary>
+                Generates and writes an AK5/IK5 Transaction Response Trailer.
+            </summary>
+        </member>
+        <member name="M:ImportExport5010_997_999.ValidationTools.AcknowledgmentEDIWriter`2.WriteFunctGroupRespTrlr(ImportExport5010_997_999.ValidationTools.FuncGrpAckCode,System.Int64,System.Int64,System.Int64,System.Collections.Generic.IEnumerable{ImportExport5010_997_999.ValidationTools.FuncGrpSyntaxError})">
+            <summary>
+                Generates and writes an AK9 Functional Group Response Trailer.
+            </summary>
+        </member>
+        <member name="F:ImportExport5010_997_999.ValidationTools.BaseImplementationMonitor`2.bizUnitDetector">
+            <summary>
+                Specific type created by your concrete Implementation Monitor constructor.
+            </summary>
+        </member>
+        <member name="P:ImportExport5010_997_999.ValidationTools.BaseImplementationMonitor`2.CurrentBusinessContext">
+            <summary>
+                Exposed for convenience, this monitor supplies it to AckWriter directly
+            </summary>
+        </member>
+        <member name="T:ImportExport5010_997_999.ValidationTools.BusinessUnitID">
+            <summary>
+                ID for current claim, etc (transaction-dependent). Data for constructing CTX01 composite element.
+            </summary>
+        </member>
+        <member name="P:ImportExport5010_997_999.ValidationTools.BusinessUnitID.ContextName">
+            <summary> CTX01-1 the source context of the ID in CTX01-2 (ex: CLM01 for 837 claim patient acct no)</summary>
+        </member>
+        <member name="P:ImportExport5010_997_999.ValidationTools.BusinessUnitID.ContextReference">
+            <summary> CTX01-2 the ID (patient etc in location described by CTX01_1) </summary>
+        </member>
+        <member name="T:ImportExport5010_997_999.ValidationTools.CompletionStatus">
+            <summary>
+                Status codes to report completion of validation process. Additional info may be in the ErrorText property.
+            </summary>
+        </member>
+        <member name="F:ImportExport5010_997_999.ValidationTools.CompletionStatus.Completed">
+            <summary>EDI validation process DID run to completion, but does NOT mean data is valid.</summary>
+        </member>
+        <member name="F:ImportExport5010_997_999.ValidationTools.CompletionStatus.Aborted">
+            <summary>Unable to complete the validation process.</summary>
+        </member>
+        <member name="F:ImportExport5010_997_999.ValidationTools.CompletionStatus.AbortedBadEnvelope">
+            <summary>Major errors in ISA/GS envelope prevent processing and creation of a 997.</summary>
+        </member>
+        <member name="F:ImportExport5010_997_999.ValidationTools.CompletionStatus.AbortedMultipleISAs">
+            <summary>File has multiple ISA-IEA interchange envelopes, which is not supported by SSI.</summary>
+        </member>
+        <member name="F:ImportExport5010_997_999.ValidationTools.CompletionStatus.AbortedException">
+            <summary>Aborted by some other unexpected exception - details in ErrorText property.</summary>
+        </member>
+        <member name="F:ImportExport5010_997_999.ValidationTools.CompletionStatus.AbortedFileNameOrPath">
+            <summary>Bad file name or path -- couldn't reach file to process.</summary>
+        </member>
+        <member name="T:ImportExport5010_997_999.ValidationTools.CompositeConstraint">
+            <summary>
+                Constraint to handle 'composite' elements containing other elements.
+                Constraints for these 'components' are defined upon construction.
+                Result of Check() is for composite as a whole, w/ component error
+                list in a public property.   Uses OOP Composite design pattern.
+            </summary>
+        </member>
+        <member name="F:ImportExport5010_997_999.ValidationTools.CompositeConstraint.ComponentDataElemNumbers">
+            <summary>
+                Exposes the constraints defined on this composite element's component subelements in the constructor.
+            </summary>
+        </member>
+        <member name="F:ImportExport5010_997_999.ValidationTools.CompositeConstraint.componentErrors">
+            <summary>
+                Will hold errrors for the component subelements of the composite - reused by CheckComponents()
+            </summary>
+        </member>
+        <member name="M:ImportExport5010_997_999.ValidationTools.CompositeConstraint.#ctor(System.Boolean,ImportExport5010_997_999.ValidationTools.ElementConstraint[])">
+            <summary>
+                Supply the constraints for the composite element's components.
+                Max number of components implied by number of constraints.
+            </summary>
+        </member>
+        <member name="P:ImportExport5010_997_999.ValidationTools.CompositeConstraint.SubelementSeparator">
+            <summary>
+                Used for parsing composite element into components for their constraint checking.
+                Value must be set by parent validator object before calling check.
+            </summary>
+        </member>
+        <member name="M:ImportExport5010_997_999.ValidationTools.CompositeConstraint.CheckElementSyntax(System.String)">
+            <summary>
+                ElementData is the not-yet-parsed composite string.
+                This method returns *overall* error if empty/missing when mandatory.
+                NOTE - Errors from individual component elements are checked by separate
+                call to CheckComponents().
+            </summary>
+        </member>
+        <member name="P:ImportExport5010_997_999.ValidationTools.CompositeRelationalConstraint.SubelementSeparator">
+            <summary>
+                Supply the character delimiting the component subelements within the composite element if it is not the default
+                ':'.
+            </summary>
+        </member>
+        <member name="T:ImportExport5010_997_999.ValidationTools.ConditionRelConstraint">
+            <summary>
+                Conditional: if first is present, *all* others in list required too.
+            </summary>
+        </member>
+        <member name="M:ImportExport5010_997_999.ValidationTools.ConditionRelConstraint.#ctor(System.Int32[])">
+            <summary>
+                If first is present, all others in list required too.
+            </summary>
+            <param name="elementNums">Array containing positions of related elements.</param>
+        </member>
+        <member name="T:ImportExport5010_997_999.ValidationTools.CondListRelConstraint">
+            <summary>
+                If first is present, then *at least one* of the others in list is required.
+            </summary>
+        </member>
+        <member name="M:ImportExport5010_997_999.ValidationTools.CondListRelConstraint.#ctor(System.Int32[])">
+            <summary>
+                If first is present, *at least one* of others in list required too.
+            </summary>
+            <param name="elementNums">Array containing positions of related elements.</param>
+        </member>
+        <member name="T:ImportExport5010_997_999.ValidationTools.ControlSegValidatorMgr`1">
+            <summary>
+                'Keeper' class for validators for X12 EDI control segments: ISA/IEA,GS/GE
+                and ST/SE, which are common to all types of EDI interchanges.
+                Note: ST/SE are also considered data segments.
+            </summary>
+        </member>
+        <member name="M:ImportExport5010_997_999.ValidationTools.ControlSegValidatorMgr`1.#ctor(EDIX12Core.EDITransactionVersionInfo)">
+            <summary>
+                Default constructor for interchange Control segments (for HC 837 transactions).
+            </summary>
+        </member>
+        <member name="T:ImportExport5010_997_999.ValidationTools.DateConstraint">
+            <summary>
+                Constraint for an ASC X12 DT date element (like 'D8' CCYYMMDD format qualifier of DTP).
+            </summary>
+        </member>
+        <member name="M:ImportExport5010_997_999.ValidationTools.DateConstraint.#ctor(System.Boolean)">
+            <summary>
+                Default constructor for 4 digit year, ex: 1998
+            </summary>
+        </member>
+        <member name="M:ImportExport5010_997_999.ValidationTools.DateConstraint.#ctor(System.Boolean,System.Boolean)">
+            <summary>
+                Overloaded constructor: set 2nd param to True for
+                2 digit year, ex: 98 instead of 1998, for ISA.
+            </summary>
+        </member>
+        <member name="T:ImportExport5010_997_999.ValidationTools.DecimalConstraint">
+            <summary>
+                Constraint for a number with decimal point as for dollar amounts
+                or measurements.
+            </summary>
+        </member>
+        <member name="M:ImportExport5010_997_999.ValidationTools.DecimalConstraint.#ctor(System.Boolean,System.Int32,System.Int32)">
+            <summary>
+                Constraint for elements containing a number with decimal point.
+            </summary>
+        </member>
+        <member name="T:ImportExport5010_997_999.ValidationTools.DynamicSegElementValidator`1">
+            <summary>
+                Dynamic Segment Element Validator -- has extra methods to allow data-dependent configuration of the
+                element constraint checking.
+            </summary>
+        </member>
+        <member name="M:ImportExport5010_997_999.ValidationTools.DynamicSegElementValidator`1.DoDynamicConfig">
+            <summary>
+                Contains setup code executed by SetData to allow for 'on the fly' configuration
+                of element constraints (loop- or qualifier-dependent code lists, etc) based on the current segment's
+                supplied element data. Is NOT directly called by user of class, but by SetData().
+            </summary>
+        </member>
+        <member name="M:ImportExport5010_997_999.ValidationTools.DynamicSegElementValidator`1.SetData(System.String[],`0,EDIX12Core.EDI_Delimiters)">
+            <summary>
+                Overridden SetData calls DoDynamicConfig to allow for on-the-fly setup of constraints,
+                dependent on a qualifier (usually in 1st element) or the containing loop.
+            </summary>
+        </member>
+        <!-- Badly formed XML comment ignored for member "T:ImportExport5010_997_999.ValidationTools.EDIenumExtensions" -->
+        <member name="M:ImportExport5010_997_999.ValidationTools.EDIenumExtensions.ToCode(ImportExport5010_997_999.ValidationTools.ElementSyntaxError)">
+            <summary>
+                Returns the corresponding numeric code.
+            </summary>
+        </member>
+        <member name="M:ImportExport5010_997_999.ValidationTools.EDIenumExtensions.ToCode(ImportExport5010_997_999.ValidationTools.SegmentSyntaxError)">
+            <summary>
+                Returns the corresponding numeric code.
+            </summary>
+        </member>
+        <member name="M:ImportExport5010_997_999.ValidationTools.EDIenumExtensions.ToCode(ImportExport5010_997_999.ValidationTools.TransactSyntaxError)">
+            <summary>
+                Returns the corresponding [alpha]numeric code.
+            </summary>
+        </member>
+        <member name="M:ImportExport5010_997_999.ValidationTools.EDIenumExtensions.ToCode(ImportExport5010_997_999.ValidationTools.FuncGrpSyntaxError)">
+            <summary>
+                Returns the corresponding numeric code.
+            </summary>
+        </member>
+        <member name="M:ImportExport5010_997_999.ValidationTools.EDIenumExtensions.ToCode(ImportExport5010_997_999.ValidationTools.TransSetAckCode)">
+            <summary>
+                Returns the corresponding character code.
+            </summary>
+        </member>
+        <member name="M:ImportExport5010_997_999.ValidationTools.EDIenumExtensions.ToCode(ImportExport5010_997_999.ValidationTools.FuncGrpAckCode)">
+            <summary>
+                Returns the corresponding character code.
+            </summary>
+        </member>
+        <member name="T:ImportExport5010_997_999.ValidationTools.EDISyntaxValidator`7">
+            <summary>
+                Performs syntax validation of ANSI X12 EDI interchanges and generates FA997 or 999 using the supplied
+                transaction-specific types.
+            </summary>
+        </member>
+        <!-- Badly formed XML comment ignored for member "F:ImportExport5010_997_999.ValidationTools.EDISyntaxValidator`7.IntchgMonitor" -->
+        <member name="F:ImportExport5010_997_999.ValidationTools.EDISyntaxValidator`7.isaStatus">
+            <summary>
+                For use in creating a TA1 on demand, only exists after valdiation attempt
+            </summary>
+        </member>
+        <member name="M:ImportExport5010_997_999.ValidationTools.EDISyntaxValidator`7.#ctor(ImportExport5010_997_999.ValidationTools.ValidationAckMode,ImportExport5010_997_999.ValidationTools.IImplementationMonitor{`4,`5},EDIX12Core.EDITransactionVersionInfo,System.IO.TextWriter)">
+            <summary>
+                Constructor. Performs validation for 997 or 999 by using supplied type parameters in user declaration.
+            </summary>
+        </member>
+        <member name="P:ImportExport5010_997_999.ValidationTools.EDISyntaxValidator`7.ValidationStats">
+            <summary>
+                Exposes summary stats and control numbers for accepted groups/transactions.
+                Useful for later import process. Maintained by GroupTransactionMonitor.
+            </summary>
+        </member>
+        <member name="P:ImportExport5010_997_999.ValidationTools.EDISyntaxValidator`7.LineBreaksInAck">
+            <summary>
+                Setting to append each segment in 997 output with CRLF for readability.
+                Defaults to false (no line breaks).
+            </summary>
+        </member>
+        <member name="P:ImportExport5010_997_999.ValidationTools.EDISyntaxValidator`7.ErrorStatus">
+            <summary>
+                Status enum for error set when call to Validate returns false (aborted, failed to complete.)
+            </summary>
+        </member>
+        <member name="P:ImportExport5010_997_999.ValidationTools.EDISyntaxValidator`7.ErrorText">
+            <summary>
+                Contains additional text such as exception message, if validation failed and was aborted.
+            </summary>
+        </member>
+        <member name="M:ImportExport5010_997_999.ValidationTools.EDISyntaxValidator`7.ValidateEDISyntax(System.IO.TextReader)">
+            <summary>
+                Validates supplied 837 EDI file, generating a 997 acknowledgment,
+                with or w/o errors, if possible. Returns true if validation process ran to completion (details in
+                property ValidationStats), returns false if it could not (details in ErrorStatus, ErrorText property).
+                NOTE - a 'true' result does not mean the 837 is syntactically valid, rather only that validation completed.
+            </summary>
+        </member>
+        <member name="T:ImportExport5010_997_999.ValidationTools.ElementConstraint">
+            <summary>
+                Base class for single-element EDI constraints (1 per element in segment)
+            </summary>
+        </member>
+        <member name="M:ImportExport5010_997_999.ValidationTools.ElementConstraint.CheckElement(System.String)">
+            <summary>
+                If no element errors, returns null instead of an empty collection
+            </summary>
+            <param name="ElementData"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ImportExport5010_997_999.ValidationTools.ElementConstraint.CheckElementSyntax(System.String)">
+            <summary>
+                Behavior must be defined in concrete element constraint classes.
+            </summary>
+            <param name="ElementData"></param>
+            <returns></returns>
+        </member>
+        <member name="T:ImportExport5010_997_999.ValidationTools.ElementError">
+            <summary>
+                Used to keep an element's error with its position, as well as 837 Data Element# and the bad data,
+                for later creation of an AK4/IK4.
+            </summary>
+        </member>
+        <member name="M:ImportExport5010_997_999.ValidationTools.ElementError.#ctor(System.Int32,ImportExport5010_997_999.ValidationTools.ElementSyntaxError,System.String,System.String)">
+            <summary>
+                Constructor for errors for normal elements within segment.
+            </summary>
+        </member>
+        <member name="M:ImportExport5010_997_999.ValidationTools.ElementError.#ctor(System.Int32,System.Int32,System.Int32,ImportExport5010_997_999.ValidationTools.ElementSyntaxError,System.String,System.String)">
+            <summary>
+                Constructor for errors for component elements *within* segment's composite element (or a repeater).
+                componentPos or repeatPos is 1-based position within the composite.
+                Normally only pass one of these two values.
+            </summary>
+        </member>
+        <member name="P:ImportExport5010_997_999.ValidationTools.ElementError.Position">
+            <summary>
+                Begins at 1, not 0.
+            </summary>
+        </member>
+        <member name="P:ImportExport5010_997_999.ValidationTools.ElementError.ComponentPosition">
+            <summary>
+                Begins at 1, not 0.
+            </summary>
+        </member>
+        <member name="P:ImportExport5010_997_999.ValidationTools.ElementError.RepeatPosition">
+            <summary>
+                Begins at 1, not 0.
+            </summary>
+        </member>
+        <member name="T:ImportExport5010_997_999.ValidationTools.ElementSyntaxError">
+            <summary>
+                Superset of Element Syntax Error Codes for use in AK4 (997) plus additional Implementation syntax error
+                codes ONLY used in IK4 (for 999)
+            </summary>
+        </member>
+        <member name="F:ImportExport5010_997_999.ValidationTools.ElementSyntaxError.NoError">
+            <summary>Dummy value for ElementConstraints to report no error found.</summary>
+        </member>
+        <member name="F:ImportExport5010_997_999.ValidationTools.ElementSyntaxError.RequiredMissing">
+            <summary> For 5010 997 or 999 (code 1) </summary>
+        </member>
+        <member name="F:ImportExport5010_997_999.ValidationTools.ElementSyntaxError.CondReqMissing">
+            <summary> For 5010 997 or 999 (code 2) </summary>
+        </member>
+        <member name="F:ImportExport5010_997_999.ValidationTools.ElementSyntaxError.TooManyElements">
+            <summary> For 5010 997 or 999 (code 3) </summary>
+        </member>
+        <member name="F:ImportExport5010_997_999.ValidationTools.ElementSyntaxError.TooShort">
+            <summary> For 5010 997 or 999 (code 4) </summary>
+        </member>
+        <member name="F:ImportExport5010_997_999.ValidationTools.ElementSyntaxError.TooLong">
+            <summary> For 5010 997 or 999 (code 5) </summary>
+        </member>
+        <member name="F:ImportExport5010_997_999.ValidationTools.ElementSyntaxError.InvalidChar">
+            <summary> For 5010 997 or 999 (code 6) </summary>
+        </member>
+        <member name="F:ImportExport5010_997_999.ValidationTools.ElementSyntaxError.InvalidCode">
+            <summary> For 5010 997 or 999 (code 7) </summary>
+        </member>
+        <member name="F:ImportExport5010_997_999.ValidationTools.ElementSyntaxError.InvalidDate">
+            <summary> For 5010 997 or 999 (code 8) </summary>
+        </member>
+        <member name="F:ImportExport5010_997_999.ValidationTools.ElementSyntaxError.InvalidTime">
+            <summary> For 5010 997 or 999 (code 9) </summary>
+        </member>
+        <member name="F:ImportExport5010_997_999.ValidationTools.ElementSyntaxError.ExclusViolated">
+            <summary> For 5010 997 or 999 (code 10) </summary>
+        </member>
+        <member name="F:ImportExport5010_997_999.ValidationTools.ElementSyntaxError.TooManyRepetitions">
+            <summary> For 5010 997 or 999 (code 12) </summary>
+        </member>
+        <member name="F:ImportExport5010_997_999.ValidationTools.ElementSyntaxError.TooManyComponents">
+            <summary> For 5010 997 or 999 (code 13) </summary>
+        </member>
+        <member name="F:ImportExport5010_997_999.ValidationTools.ElementSyntaxError.ImplementNotUsedPresent">
+            <summary> USE ONLY IN 5010 999 (code I10) </summary>
+        </member>
+        <member name="F:ImportExport5010_997_999.ValidationTools.ElementSyntaxError.ImplementTooFewReps">
+            <summary> USE ONLY IN 5010 999 (code I11) </summary>
+        </member>
+        <member name="F:ImportExport5010_997_999.ValidationTools.ElementSyntaxError.ImplementPatternFail">
+            <summary> USE ONLY IN 5010 999 (code I12) </summary>
+        </member>
+        <member name="F:ImportExport5010_997_999.ValidationTools.ElementSyntaxError.ImplemDependNotUsedPresent">
+            <summary> USE ONLY IN 5010 999 (code I13) </summary>
+        </member>
+        <member name="F:ImportExport5010_997_999.ValidationTools.ElementSyntaxError.ImplementCodeNotUsed">
+            <summary> USE ONLY IN 5010 999 (code I6)</summary>
+        </member>
+        <member name="F:ImportExport5010_997_999.ValidationTools.ElementSyntaxError.ImplemDependElemMissing">
+            <summary> USE ONLY IN 5010 999 (code I9) </summary>
+        </member>
+        <member name="T:ImportExport5010_997_999.ValidationTools.ExclusRelConstraint">
+            <summary>
+                Mutual exclusion: at most only one of set can be present
+            </summary>
+        </member>
+        <member name="M:ImportExport5010_997_999.ValidationTools.ExclusRelConstraint.#ctor(System.Int32[])">
+            <summary>
+                'Only one at most' constraint on 2 or more elements.
+            </summary>
+            <param name="elementNums">Array containing positions of related elements.</param>
+        </member>
+        <member name="T:ImportExport5010_997_999.ValidationTools.FuncGrpAckCode">
+            <summary>
+                Functional Group acknowledgement codes used in AK9
+            </summary>
+        </member>
+        <member name="T:ImportExport5010_997_999.ValidationTools.FuncGrpSyntaxError">
+            <summary>
+                Functional Group Syntax Error Codes for use in AK9
+            </summary>
+        </member>
+        <member name="M:ImportExport5010_997_999.ValidationTools.FunctGroupStats.AcceptedTransactions">
+            <summary>
+                Returns array of the stats objects of just the accepted transactions.
+                Does NOT include any PartiallyAccepted!
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:ImportExport5010_997_999.ValidationTools.FunctGroupStats.AcceptedTransControlNumbers">
+            <summary>
+                Returns just the control numbers of the Accepted transactions in the group.
+            </summary>
+        </member>
+        <member name="M:ImportExport5010_997_999.ValidationTools.FunctGroupStats.RejectedTransactions">
+            <summary>
+                Currently returns stats objects for any transactions in group *not* fully Accepted.
+            </summary>
+        </member>
+        <member name="M:ImportExport5010_997_999.ValidationTools.FunctGroupStats.NumAcceptedClaims">
+            <summary>
+                Returns the total number of claims in the group's accepted transactions.
+            </summary>
+        </member>
+        <member name="M:ImportExport5010_997_999.ValidationTools.FunctGroupStats.NumRejectedClaims">
+            <summary>
+                Returns the total number of claims in the group's rejected transactions.
+            </summary>
+        </member>
+        <member name="M:ImportExport5010_997_999.ValidationTools.FunctGroupStats.NumAllClaimsInGrp">
+            <summary>
+                Returns total count of claims in all transactions in group, both accepted and rejected.
+            </summary>
+        </member>
+        <member name="M:ImportExport5010_997_999.ValidationTools.FunctGroupStats.NumTransactionsTotal">
+            <summary>
+                Total number of transactions in group, both accepted and rejected.
+            </summary>
+        </member>
+        <member name="P:ImportExport5010_997_999.ValidationTools.GSsegValidator`1.GS08versions">
+            <summary>
+                Property to allow modifying default GS08 versions: HC 004010X096A1,004010X097A1,004010X098A1.
+            </summary>
+        </member>
+        <member name="P:ImportExport5010_997_999.ValidationTools.GSsegValidator`1.GS01FunctionalID">
+            <summary>
+                Property to allow modifying default GS01 ID: HC = Healthcare. Warning: GS08 MUST be modified too!
+            </summary>
+        </member>
+        <member name="T:ImportExport5010_997_999.ValidationTools.IAcknowledgmentWriter`2">
+            <summary>
+                Supplies mechanism for generic output from 997/999 Validator for Functional/Implementation Acknowledgments
+            </summary>
+            <typeparam name="TSpecialLoops"></typeparam>
+            <typeparam name="TLoopTypeEnum"></typeparam>
+        </member>
+        <member name="P:ImportExport5010_997_999.ValidationTools.IAcknowledgmentWriter`2.AllowLongLoopIDs">
+            <summary>
+                Default is false for strict 997/999 4 digit loop id field in segment/element errors.
+                Can override to allow full 5 or 6 digits of loop ID, such as 2310B or 2010BA, for alternate uses.
+            </summary>
+        </member>
+        <member name="P:ImportExport5010_997_999.ValidationTools.IAcknowledgmentWriter`2.BusinessContext">
+            <summary>
+                Value set by separate Implementation Monitor, if one supplied -- value may be null.
+            </summary>
+        </member>
+        <member name="M:ImportExport5010_997_999.ValidationTools.IAcknowledgmentWriter`2.WriteInterchangeStart(System.String[])">
+            <summary> Writes ISA for acknowledgment. </summary>
+        </member>
+        <member name="M:ImportExport5010_997_999.ValidationTools.IAcknowledgmentWriter`2.WriteGroupStart(System.String[],System.String)">
+            <summary> Writes GS for acknowledgment. </summary>
+        </member>
+        <member name="M:ImportExport5010_997_999.ValidationTools.IAcknowledgmentWriter`2.WriteAckTransactStart(System.String)">
+            <summary> Writes ST for 997 or 999 </summary>
+        </member>
+        <member name="M:ImportExport5010_997_999.ValidationTools.IAcknowledgmentWriter`2.WriteFunctGroupRespHdr(System.String)">
+            <summary> Writes AK1 </summary>
+        </member>
+        <member name="M:ImportExport5010_997_999.ValidationTools.IAcknowledgmentWriter`2.WriteTransactRespHdr(System.String,System.String)">
+            <summary> Writes AK2 </summary>
+        </member>
+        <member name="M:ImportExport5010_997_999.ValidationTools.IAcknowledgmentWriter`2.WriteSegmentError(System.String,System.Int64,`1,ImportExport5010_997_999.ValidationTools.SegmentSyntaxError)">
+            <summary> Creates AK3/IK3 segment error </summary>
+        </member>
+        <member name="M:ImportExport5010_997_999.ValidationTools.IAcknowledgmentWriter`2.WriteElementErrors(System.String,System.Int64,`1,System.Collections.Generic.IEnumerable{ImportExport5010_997_999.ValidationTools.ElementError})">
+            <summary> Creates AK3/IK3 segment error header and AK4/IK4s for syntax element errors </summary>
+        </member>
+        <member name="M:ImportExport5010_997_999.ValidationTools.IAcknowledgmentWriter`2.WriteElementErrors(System.String,System.Int64,`1,System.Collections.Generic.IEnumerable{ImportExport5010_997_999.ValidationTools.SituationalElementError{`1}})">
+            <summary>
+                Creates IK3 segment error header and IK4 for implementation situational element errors.
+                May throw exception if called while validation mode is 997.
+            </summary>
+        </member>
+        <member name="M:ImportExport5010_997_999.ValidationTools.IAcknowledgmentWriter`2.WriteTransactRespTrlr(ImportExport5010_997_999.ValidationTools.TransSetAckCode,System.Collections.Generic.IEnumerable{ImportExport5010_997_999.ValidationTools.TransactSyntaxError})">
+            <summary> Writes IK5 </summary>
+        </member>
+        <member name="M:ImportExport5010_997_999.ValidationTools.IAcknowledgmentWriter`2.WriteFunctGroupRespTrlr(ImportExport5010_997_999.ValidationTools.FuncGrpAckCode,System.Int64,System.Int64,System.Int64,System.Collections.Generic.IEnumerable{ImportExport5010_997_999.ValidationTools.FuncGrpSyntaxError})">
+            <summary> Writes AK9</summary>
+        </member>
+        <member name="M:ImportExport5010_997_999.ValidationTools.IAcknowledgmentWriter`2.WriteAckTransactEnd">
+            <summary>Writes SE and GE </summary>
+        </member>
+        <member name="M:ImportExport5010_997_999.ValidationTools.IAcknowledgmentWriter`2.WriteGroupEnd">
+            <summary> Writes GE </summary>
+        </member>
+        <member name="M:ImportExport5010_997_999.ValidationTools.IAcknowledgmentWriter`2.WriteInterchangeEnd">
+            <summary> Writes IEA </summary>
+        </member>
+        <member name="P:ImportExport5010_997_999.ValidationTools.IBusinessContextDetector`1.CurrentBusinessContext">
+            <summary>
+                Will be null when not in a business unit (outside transaction, or in shared loops 'above' the bus unit/claim/etc)
+            </summary>
+        </member>
+        <member name="M:ImportExport5010_997_999.ValidationTools.IBusinessContextDetector`1.TrackBusinessUnits(System.String[],`0,EDIX12Core.EDI_Delimiters)">
+            <summary>
+                Returns true if the segment changed the context (to a new ID or to null -no longer in a unit).
+            </summary>
+        </member>
+        <member name="T:ImportExport5010_997_999.ValidationTools.IdConstraint">
+            <summary>
+                Constraint for 'ID' elements where value should
+                be restricted to a supplied list of codes.
+            </summary>
+        </member>
+        <member name="M:ImportExport5010_997_999.ValidationTools.IdConstraint.#ctor(System.Boolean)">
+            <summary>
+                Constraint for 'ID' elements where value restricted to a list.
+                Use this constructor when setting code list dynamically.
+            </summary>
+        </member>
+        <member name="M:ImportExport5010_997_999.ValidationTools.IdConstraint.#ctor(System.Boolean,System.String[])">
+            <summary>
+                Constraint for 'ID' elements where value restricted to a list.
+                ValidCodes is either an array of codes OR a comma separated list.
+                Use this constructor when lists are fixed, or to set defaults.
+            </summary>
+        </member>
+        <member name="M:ImportExport5010_997_999.ValidationTools.IImplementationMonitor`2.CheckBusinessContext(System.String[],`1,EDIX12Core.EDI_Delimiters)">
+            <summary>
+                Watches for TRN, CLM, etc for 'business unit' identifier for an individual item within
+                the transaction: claim, remit, eligiblity inquiry, etc.
+                Call before LoopSegmentMonitor.
+                Also used to detect other inplementation-dependent situational contexts.
+            </summary>
+        </member>
+        <member name="M:ImportExport5010_997_999.ValidationTools.IImplementationMonitor`2.CheckElementSituationalRules(System.String[],`1,System.Int64,EDIX12Core.EDI_Delimiters)">
+            <summary>
+                Call from SegmentElementMonitor
+            </summary>
+            <param name="segmentElements"></param>
+            <param name="currentLoop"></param>
+            <param name="segTransactPosition"></param>
+            <param name="delims"></param>
+        </member>
+        <member name="M:ImportExport5010_997_999.ValidationTools.IImplementationMonitor`2.EndofTransactionFlush">
+            <summary>
+                Call from InterchangeMonitor on SE so any leftover multi-segment implementation checks can finish.
+                (...since interchange monitor will emit an AK5 before SegmentElementMonitor will 'see' the SE.)
+            </summary>
+        </member>
+        <member name="M:ImportExport5010_997_999.ValidationTools.IImplementationMonitor`2.Reset">
+            <summary>
+                Reset internal state if reusing the monitor instance for another interchange validation.
+            </summary>
+        </member>
+        <member name="T:ImportExport5010_997_999.ValidationTools.InterchangeMonitor`2">
+            <summary>
+                Tracks interchange, functional group, and transaction integrity and status.
+                State machine that is handed every segment as it is read.
+            </summary>
+        </member>
+        <member name="F:ImportExport5010_997_999.ValidationTools.InterchangeMonitor`2.functionalVersion">
+            <summary>
+                Type of 837 (P/I/D) from GS08
+            </summary>
+        </member>
+        <member name="F:ImportExport5010_997_999.ValidationTools.InterchangeMonitor`2.functionalVersionPrevious">
+            <summary>
+                Version, 837 type, of last group, for detecting changes.
+            </summary>
+        </member>
+        <member name="F:ImportExport5010_997_999.ValidationTools.InterchangeMonitor`2.overallStatus">
+            <summary>
+                In-memory object with status details, parallels the higher level
+                acknowledgements written to the 997 -- useful for later external import process.
+            </summary>
+        </member>
+        <member name="M:ImportExport5010_997_999.ValidationTools.InterchangeMonitor`2.#ctor(EDIX12Core.EDITransactionVersionInfo,ImportExport5010_997_999.ValidationTools.IAcknowledgmentWriter{`0,`1})">
+            <summary>
+                Default constructor.
+            </summary>
+        </member>
+        <member name="P:ImportExport5010_997_999.ValidationTools.InterchangeMonitor`2.OverallStatus">
+            <summary>
+                Contains summary info for EDI file, subset of what is written to 997.
+            </summary>
+        </member>
+        <member name="P:ImportExport5010_997_999.ValidationTools.InterchangeMonitor`2.TransactSetErrors">
+            for current
+        </member>
+        <member name="P:ImportExport5010_997_999.ValidationTools.InterchangeMonitor`2.GroupErrors">
+            for current
+        </member>
+        <member name="M:ImportExport5010_997_999.ValidationTools.InterchangeMonitor`2.FailTransactionForInvalidData">
+            <summary>
+                Used to inform monitor of errors found by external objects:
+                loop-segment tracker, segment validators.
+            </summary>
+        </member>
+        <member name="M:ImportExport5010_997_999.ValidationTools.InterchangeMonitor`2.TrackSegment(System.String[])">
+            <summary>
+                For all segments after initial ISA. Causes updates to internal status for later 997 generation.
+            </summary>
+        </member>
+        <member name="M:ImportExport5010_997_999.ValidationTools.InterchangeMonitor`2.StartFunctGroupGS(System.String,System.String,System.String,System.String[])">
+            <summary>
+                Call whenever a GS segment is encountered in source EDI file.
+            </summary>
+        </member>
+        <member name="M:ImportExport5010_997_999.ValidationTools.InterchangeMonitor`2.StartTransactionST(System.String,System.String)">
+            <summary>
+                Call whenever an ST segment is encountered in source EDI file.
+            </summary>
+        </member>
+        <member name="M:ImportExport5010_997_999.ValidationTools.InterchangeMonitor`2.EndTransactionSE(System.String,System.Int64)">
+            <summary>
+                Call whenever an SE segment is encountered in source EDI file.
+            </summary>
+            //or pass a TransSetAckCode?
+        </member>
+        <member name="M:ImportExport5010_997_999.ValidationTools.InterchangeMonitor`2.EndFunctGroupGE(System.String,System.String)">
+            <summary>
+                Call whenever a GE segment is encountered in EDI file.
+            </summary>
+        </member>
+        <member name="P:ImportExport5010_997_999.ValidationTools.InterchangeStats.NumAcceptedClaims">
+            <summary>
+                Number of claims in accepted transactions from all groups (includes partially accepted groups).
+            </summary>
+        </member>
+        <member name="M:ImportExport5010_997_999.ValidationTools.InterchangeStats.AcceptedGroups">
+            <summary>
+                Includes Partially Accepted groups as well.
+            </summary>
+        </member>
+        <member name="M:ImportExport5010_997_999.ValidationTools.InterchangeStats.ToString">
+            <summary>
+                Returns formatted text summary.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="F:ImportExport5010_997_999.ValidationTools.LoopSegmentMonitor`6.loopSegments">
+            <summary>
+                Tracks the loops for just the current claim within the larger 837.
+            </summary>
+            <summary>
+                Tracks the segments encountered within the current loop.
+            </summary>
+        </member>
+        <!-- Badly formed XML comment ignored for member "F:ImportExport5010_997_999.ValidationTools.LoopSegmentMonitor`6.segmentDefs" -->
+        <member name="P:ImportExport5010_997_999.ValidationTools.LoopSegmentMonitor`6.FoundErrors">
+            <summary>
+                True if one or more errors found: segment does not belong in current loop,
+                too many of segment in loop, or missing required segments before current segment.
+            </summary>
+        </member>
+        <member name="P:ImportExport5010_997_999.ValidationTools.LoopSegmentMonitor`6.CurrentLoop">
+            <summary>
+                Current loop, based on last loop trigger segment encountered.
+            </summary>
+        </member>
+        <member name="P:ImportExport5010_997_999.ValidationTools.LoopSegmentMonitor`6.SegmentBelongsInLoop">
+            <summary>
+                Segment ID of segment just checked is valid for current loop.
+            </summary>
+        </member>
+        <member name="M:ImportExport5010_997_999.ValidationTools.LoopSegmentMonitor`6.TrackSegment(System.String[],System.Int64)">
+            <summary>
+                Only call when new functional group changes the version (type P/I/D) of 837 transaction.
+                Caller should be sure initial state is consistent (version change detected at GS segment,
+                so 'pre-transition' for ISA, GS.)
+            </summary>
+            <summary>
+                Track location and status of segment within current loop, and loop within transaction.
+                Afterward, property FoundErrors of true indicates problem detected and an AK3 written to the 997.
+            </summary>
+        </member>
+        <member name="T:ImportExport5010_997_999.ValidationTools.NotUsedConstraint">
+            <summary>
+                Dummy class used as a placeholder in a segment validator's
+                list of contraints where an element is defined in spec as Not Used.
+            </summary>
+        </member>
+        <member name="P:ImportExport5010_997_999.ValidationTools.NotUsedConstraint.Instance">
+            <summary>
+                This property returns a reference to the only instance (constructor not called).
+            </summary>
+        </member>
+        <member name="T:ImportExport5010_997_999.ValidationTools.NumberConstraint">
+            <summary>
+                Constraint for a number withOUT decimal point.
+            </summary>
+        </member>
+        <member name="M:ImportExport5010_997_999.ValidationTools.NumberConstraint.#ctor(System.Boolean,System.Int32,System.Int32)">
+            <summary>
+                Constraint for a number withOUT decimal point (or fractional part handled by scaling).
+                Lengths are numbers of digits, excluding a negative sign.
+            </summary>
+        </member>
+        <member name="T:ImportExport5010_997_999.ValidationTools.PairedRelConstraint">
+            <summary>
+                'All or none' constraint on 2 or more elements.
+            </summary>
+        </member>
+        <member name="M:ImportExport5010_997_999.ValidationTools.PairedRelConstraint.#ctor(System.Int32[])">
+            <summary>
+                'All or none' constraint on 2 or more elements.
+            </summary>
+            <param name="elementNums">Array containing positions of related elements.</param>
+        </member>
+        <member name="T:ImportExport5010_997_999.ValidationTools.RelationalConstraint">
+            <summary>
+                Base class for 'relational' constraints, where
+                a subset of multiple elements in a segment have some
+                dependency.
+            </summary>
+        </member>
+        <member name="F:ImportExport5010_997_999.ValidationTools.RelationalConstraint.elementNumbers">
+            <summary>
+                Array containing numbers (segment positions) of affected elements.
+                Derived classes must access thru property, so they get the protections below
+            </summary>
+        </member>
+        <member name="P:ImportExport5010_997_999.ValidationTools.RelationalConstraint.RelatedElementNumbers">
+            <summary>
+                Array with the indexes of the elements governed by this constraint.
+                For some types of constraints the first indicated element has special significance,
+                so be careful with the order.
+            </summary>
+        </member>
+        <member name="T:ImportExport5010_997_999.ValidationTools.RepetitionConstraint">
+            <summary>
+                Constraint to handle 'repeating' elements containing other elements *of the same type.
+                Constraints for these 'components' are defined upon construction.
+                Result of Check() is for composite as a whole, w/ component error
+                list in a public property.   Uses OOP Composite design pattern.
+            </summary>
+        </member>
+        <member name="F:ImportExport5010_997_999.ValidationTools.RepetitionConstraint.repeatingElemErrors">
+            <summary>
+                Will hold errrors for the component subelements of the composite - reused by CheckComponents()
+            </summary>
+        </member>
+        <member name="M:ImportExport5010_997_999.ValidationTools.RepetitionConstraint.#ctor(System.Boolean,ImportExport5010_997_999.ValidationTools.ElementConstraint,System.Int32)">
+            <summary>
+                Supply the constraint for the repeating element's members.
+                All will be checked with the same constraint since all should be of same type.
+                Mandatory is true if at least one is required.
+                Max Occurs is upper limit, set to 0 or -1 if IG does not define one.
+            </summary>
+        </member>
+        <member name="P:ImportExport5010_997_999.ValidationTools.RepetitionConstraint.RepetitionSeparator">
+            <summary>
+                Used for parsing composite element into components for their constraint checking.
+                Value must be set by parent validator object before calling check.
+            </summary>
+        </member>
+        <member name="M:ImportExport5010_997_999.ValidationTools.RepetitionConstraint.CheckElementSyntax(System.String)">
+            <summary>
+                ElementData is the not-yet-parsed composite string.
+                This method returns overall error if empty/missing when mandatory.
+                NOTE - Errors from individual component elements should be checked by separate
+                call to CheckRepetitions().
+            </summary>
+        </member>
+        <member name="T:ImportExport5010_997_999.ValidationTools.RequiredRelConstraint">
+            <summary>
+                'At least one' constraint on 2 or more elements.
+            </summary>
+        </member>
+        <member name="M:ImportExport5010_997_999.ValidationTools.RequiredRelConstraint.#ctor(System.Int32[])">
+            <summary>
+                'At least one' constraint on 2 or more elements.
+            </summary>
+            <param name="elementNums">Array containing positions of related elements.</param>
+        </member>
+        <member name="T:ImportExport5010_997_999.ValidationTools.SegElementValidator`1">
+            <summary>
+                Base class for the Segment Element Validators. Use when configuration of element
+                constraints is fixed upon construction: when segment only in one loop, or identical across
+                all loops in which used. -- Use DynamicSegElementValidator instead if constraints are data-dependent.
+            </summary>
+        </member>
+        <member name="F:ImportExport5010_997_999.ValidationTools.SegElementValidator`1.CurrentLoop">
+            <summary>
+                This segment's apparent parent loop (from position in file).
+                Will be checked to see if it is in the validLoops collection
+            </summary>
+        </member>
+        <member name="F:ImportExport5010_997_999.ValidationTools.SegElementValidator`1.dataElementNumbers">
+            <summary>
+                The 837 'data element number' for each position in the segment, needed to construct AK4
+                element error messages for the 997. Positions in array must correspond to the segment's
+                element data and constraint array (index 0 is empty).  Values set in derived validators.
+            </summary>
+        </member>
+        <member name="F:ImportExport5010_997_999.ValidationTools.SegElementValidator`1.dataElementNumbersForComponents">
+            <summary>
+                Normally null, concrete seg validators create and load to share between composite element and relational
+                constraints.
+                Key is 1-based composite element position within the segment, value is array of the IG data
+                element numbers for the component subelements.
+            </summary>
+        </member>
+        <member name="F:ImportExport5010_997_999.ValidationTools.SegElementValidator`1.delims">
+            <summary>
+                Character used to parse component elements within a composite.  The array of parsed elements
+                passed in thru SetData() did not parse composites.  For use by any CompositeConstraints inside
+                the segment validator object.
+            </summary>
+        </member>
+        <member name="F:ImportExport5010_997_999.ValidationTools.SegElementValidator`1.elemConstraints">
+            <summary>
+                Set of applicable single-element constraints.
+                Defaulted to empty array rather than null.
+            </summary>
+        </member>
+        <member name="F:ImportExport5010_997_999.ValidationTools.SegElementValidator`1.elements">
+            <summary>
+                Array of the already parsed segment data elements -- DOES include the segment ID at index 0
+                -- any composite elements have NOT been parsed yet (composite delimiter?)
+            </summary>
+        </member>
+        <member name="F:ImportExport5010_997_999.ValidationTools.SegElementValidator`1.relConstraints">
+            <summary>
+                Set of applicable relational (multi-element) constraints.
+                Must default to empty array rather than null.
+            </summary>
+        </member>
+        <member name="M:ImportExport5010_997_999.ValidationTools.SegElementValidator`1.SetData(System.String[],`0,EDIX12Core.EDI_Delimiters)">
+            <summary>
+                Use SetData to load segment's data, and current loop, to be validated with HasElementErrors.
+                Last param is subelement separator used to further parse any composite elements.
+            </summary>
+        </member>
+        <member name="M:ImportExport5010_997_999.ValidationTools.SegElementValidator`1.FindsElementErrors">
+            <summary>
+                Checks segment's elements (first loaded by SetData()) and returns true if any errors found.
+                After call, property ElementErrors will contain the error codes.
+            </summary>
+        </member>
+        <member name="P:ImportExport5010_997_999.ValidationTools.SegmentErrorEntry.SegID">
+            <summary>
+                Segment ID, ex: NM1, DTP
+            </summary>
+        </member>
+        <member name="P:ImportExport5010_997_999.ValidationTools.SegmentErrorEntry.MissingError">
+            <summary>
+                Flag set to true if a 'missing' segment error has already
+                been created for this type of segment.
+            </summary>
+        </member>
+        <member name="T:ImportExport5010_997_999.ValidationTools.SegmentSyntaxError">
+            <summary>
+                Superset of Segment Syntax Error Codes for use in AK3 (997), plus Implementation syntax codes ONLY for IK3 (999)
+            </summary>
+        </member>
+        <member name="F:ImportExport5010_997_999.ValidationTools.SegmentSyntaxError.NoError">
+            <summary>Dummy value for ElementConstraints to report no error found.</summary>
+        </member>
+        <member name="F:ImportExport5010_997_999.ValidationTools.SegmentSyntaxError.UnrecognizedID">
+            <summary> For 5010 997 or 999 (code 1) </summary>
+        </member>
+        <member name="F:ImportExport5010_997_999.ValidationTools.SegmentSyntaxError.UnexpectedSegment">
+            <summary> For 5010 997 or 999 (code 2) </summary>
+        </member>
+        <member name="F:ImportExport5010_997_999.ValidationTools.SegmentSyntaxError.RequiredMissing">
+            <summary> For 5010 997 or 999 (code 3) </summary>
+        </member>
+        <member name="F:ImportExport5010_997_999.ValidationTools.SegmentSyntaxError.LoopOverMaxTimes">
+            <summary> For 5010 997 or 999 (code 4) </summary>
+        </member>
+        <member name="F:ImportExport5010_997_999.ValidationTools.SegmentSyntaxError.SegExceedsmaxUse">
+            <summary> For 5010 997 or 999 (code 5) </summary>
+        </member>
+        <member name="F:ImportExport5010_997_999.ValidationTools.SegmentSyntaxError.SegNotInsideTransSet">
+            <summary> For 5010 997 or 999 (code 6) </summary>
+        </member>
+        <member name="F:ImportExport5010_997_999.ValidationTools.SegmentSyntaxError.ImproperSequence">
+            <summary> For 5010 997 or 999 (code 7) </summary>
+        </member>
+        <member name="F:ImportExport5010_997_999.ValidationTools.SegmentSyntaxError.ElementErrors">
+            <summary> For 5010 997 or 999 (code 8) </summary>
+        </member>
+        <member name="F:ImportExport5010_997_999.ValidationTools.SegmentSyntaxError.ImplemNotUsedSegPresent">
+            <summary> USE ONLY IN 5010 999 (code I4) </summary>
+        </member>
+        <member name="F:ImportExport5010_997_999.ValidationTools.SegmentSyntaxError.ImplemDependSegMissing">
+            <summary> USE ONLY IN 5010 999 (code I6) </summary>
+        </member>
+        <member name="F:ImportExport5010_997_999.ValidationTools.SegmentSyntaxError.ImplemLoopUnderMinTimes">
+            <summary> USE ONLY IN 5010 999 (code I7) </summary>
+        </member>
+        <member name="F:ImportExport5010_997_999.ValidationTools.SegmentSyntaxError.ImplemSegBelowMinUse">
+            <summary> USE ONLY IN 5010 999 (code I8) </summary>
+        </member>
+        <member name="F:ImportExport5010_997_999.ValidationTools.SegmentSyntaxError.ImplemDependNotUsedPresent">
+            <summary> USE ONLY IN 5010 999 (code I9) </summary>
+        </member>
+        <member name="T:ImportExport5010_997_999.ValidationTools.SegmentTypeConstraint">
+            <summary>
+                Constraint to check the Segment ID -- 'element'0 as a runtime
+                block on passing the wrong type of segment to the specific validator
+            </summary>
+        </member>
+        <member name="M:ImportExport5010_997_999.ValidationTools.SegmentTypeConstraint.#ctor(System.String)">
+            <summary>
+                Throws exception if Segment ID in checked segment data does not match this.
+            </summary>
+        </member>
+        <member name="F:ImportExport5010_997_999.ValidationTools.SegmentValidatorFactory`1.ValidatorCache">
+            <summary>
+                Used to cache validators for future reuse during processing of same EDI file
+            </summary>
+        </member>
+        <member name="F:ImportExport5010_997_999.ValidationTools.SegmentValidatorFactory`1.ValidSegmentIDs">
+            <summary>
+                List of the legal Segment IDs that can be expected in thtis type of EDI file.
+            </summary>
+        </member>
+        <member name="M:ImportExport5010_997_999.ValidationTools.SegmentValidatorFactory`1.GetSegmentValidator(System.String)">
+            <summary>
+                Constructs the specific required type of segment validator and returns it after
+                adding it to internal validator cache for potential reuse. Returns null if no such
+                validator exists.
+            </summary>
+            <param name="SegmentID"></param>
+        </member>
+        <member name="M:ImportExport5010_997_999.ValidationTools.SegmentValidatorFactory`1.IsRecognizedSegmentID(System.String)">
+            <summary>
+                Checks to see if supplied segment ID is valid data segment for this type of EDI file.
+                Does *not* check control segments.
+            </summary>
+        </member>
+        <member name="T:ImportExport5010_997_999.ValidationTools.SituationalTriggerContext`1">
+            <summary>
+                The segment/element whose presence/value a particular validation rule depends upon.
+                CTX01 would always be "SITUATIONAL TRIGGER"
+            </summary>
+        </member>
+        <member name="P:ImportExport5010_997_999.ValidationTools.SituationalTriggerContext`1.ContextName">
+            <summary> CTX01-1 the source context - always SITUATIONAL TRIGGER. Note CTX01-2 is not used.</summary>
+        </member>
+        <member name="P:ImportExport5010_997_999.ValidationTools.SituationalTriggerContext`1.SegmentID">
+            <summary>CTX02 ID of segment representing triggering context for a situational rule. </summary>
+        </member>
+        <member name="P:ImportExport5010_997_999.ValidationTools.SituationalTriggerContext`1.TransactionSegPosition">
+            <summary>CTX03, ignored if zero. </summary>
+        </member>
+        <member name="P:ImportExport5010_997_999.ValidationTools.SituationalTriggerContext`1.LoopID">
+            <summary>CTX04 loop ID (2010AA, etc)-- may need to be truncated to 4 char length on later output </summary>
+        </member>
+        <member name="P:ImportExport5010_997_999.ValidationTools.SituationalTriggerContext`1.ElemPositionInSegment">
+            <summary>Part 1 of CTX05 composite, used if trigger is an element within the segment</summary>
+        </member>
+        <member name="P:ImportExport5010_997_999.ValidationTools.SituationalTriggerContext`1.SubElemPositionInElement">
+            <summary>Part 2 of CTX05 composite</summary>
+        </member>
+        <member name="P:ImportExport5010_997_999.ValidationTools.SituationalTriggerContext`1.RepeatElemPositionInElement">
+            <summary>Part 3 of CTX05 composite</summary>
+        </member>
+        <member name="P:ImportExport5010_997_999.ValidationTools.SituationalTriggerContext`1.ElementDataRef">
+            <summary>Part 1 of CTX06 composite</summary>
+        </member>
+        <member name="P:ImportExport5010_997_999.ValidationTools.SituationalTriggerContext`1.SubElementDataRef">
+            <summary>Part 2 of CTX06 composite</summary>
+        </member>
+        <member name="T:ImportExport5010_997_999.ValidationTools.StringConstraint">
+            <summary>
+                Constraint for presence and length of string elements,
+                corresponding to EDI 'AN' alphanumeric data type.
+            </summary>
+        </member>
+        <member name="M:ImportExport5010_997_999.ValidationTools.StringConstraint.#ctor(System.Boolean,System.Int32,System.Int32)">
+            <summary>
+                Constraint for presence and length of alphanumeric 'AN' string elements.
+            </summary>
+        </member>
+        <member name="P:ImportExport5010_997_999.ValidationTools.STsegValidator`1.ST01TransactionTypes">
+            <summary>
+                Property to allow modfying default ST01 transaction type(s) of 837.
+            </summary>
+        </member>
+        <member name="T:ImportExport5010_997_999.ValidationTools.TimeConstraint">
+            <summary>
+                Constraint for an ASC X12 TM time element (like HHMMSSd...d - decimal seconds).
+                Also handles simple HHMM.  Uses 24hr clock: 2PM = 14, 2AM = 02
+            </summary>
+        </member>
+        <member name="T:ImportExport5010_997_999.ValidationTools.TransactSyntaxError">
+            <summary>
+                Transaction Syntax Error Codes for use in AK5
+            </summary>
+        </member>
+        <member name="F:ImportExport5010_997_999.ValidationTools.TransactSyntaxError.ImplementSegmentsError">
+            <summary>
+                For 999 only.
+            </summary>
+        </member>
+        <member name="F:ImportExport5010_997_999.ValidationTools.TransactSyntaxError.ImplementConventionNotSuppt">
+            <summary>
+                For 999 only.
+            </summary>
+        </member>
+        <member name="T:ImportExport5010_997_999.ValidationTools.TransSetAckCode">
+            <summary>
+                Transaction set acknowledgement codes used in AK5
+            </summary>
+        </member>
+        <member name="T:ImportExport5010_997_999.ValidationTools.ValidationAckMode">
+            <summary>
+                For setting operational context of certain shared classes.
+            </summary>
+        </member>
+        <member name="F:ImportExport5010_997_999.ValidationTools.ValidationAckMode.Functional997">
+            <summary>
+                Performs only syntax checking.
+            </summary>
+        </member>
+        <member name="F:ImportExport5010_997_999.ValidationTools.ValidationAckMode.Implementation999">
+            <summary>
+                Performs syntax checking (same as 999) plus additional implementation dependent checks.
+            </summary>
+        </member>
+    </members>
+</doc>

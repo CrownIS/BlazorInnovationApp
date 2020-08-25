@@ -12,4 +12,23 @@
     <PackageReference Include="Grpc.AspNetCore" Version="2.27.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="lib\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="EDIX12Core">
+      <HintPath>lib\EDIX12Core.dll</HintPath>
+    </Reference>
+    <Reference Include="EDIX12Framework">
+      <HintPath>lib\EDIX12Framework.dll</HintPath>
+    </Reference>
+    <Reference Include="ImportExport5010_270">
+      <HintPath>lib\ImportExport5010_270.dll</HintPath>
+    </Reference>
+    <Reference Include="ImportExport5010_997_999">
+      <HintPath>lib\ImportExport5010_997_999.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
 </Project>

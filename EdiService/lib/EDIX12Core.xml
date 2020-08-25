@@ -1,0 +1,1343 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>EDIX12Core</name>
+    </assembly>
+    <members>
+        <member name="T:EDIX12Core.BaseLoop">
+            <summary>
+                Common base class for all families of strongly typed generic-based loops, whether based on named segment properties
+                or dictionary
+            </summary>
+            <typeparam name="TLoopTypeEnum"></typeparam>
+        </member>
+        <member name="P:EDIX12Core.BaseLoop.UnexpectedSegments">
+            <summary>
+                Will be null unless ParsingBehavior has been set to UnexpectedSegmentHandling.Capture.
+            </summary>
+        </member>
+        <member name="P:EDIX12Core.BaseLoop.ParsingBehavior">
+            <summary>
+                Set only thru subclassed loops' constructors. Default is to throw an exception on segments not recognized for
+                current loop.
+                (Subclass's ParseFrom() should identify them and call HandleUnexpectedSegment)
+            </summary>
+        </member>
+        <member name="M:EDIX12Core.BaseLoop.GetSegmentStrings">
+            <summary>
+                Enumerable of only the valued segments, in order.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:EDIX12Core.BaseLoop.ParseFrom(System.Collections.Generic.IEnumerable{System.String},EDIX12Core.EDI_Delimiters,EDIX12Core.EDIControlInfo)">
+            <summary>
+                Concrete subclass loops
+            </summary>
+            <param name="segmentStrings"></param>
+            <param name="delimiters"></param>
+            <param name="ediStatus">Ok to pass null if you do not want original source tracking from segment reader.</param>
+        </member>
+        <member name="M:EDIX12Core.BaseLoop.HandleUnexpectedSegment(System.String,EDIX12Core.EDI_Delimiters,System.String)">
+            <summary>
+                Must be called by concrete subclass's ParseFrom, which has responsibility for determining which segments are not
+                valid for that loop.
+            </summary>
+            <param name="segmentData"></param>
+            <param name="delims"></param>
+            <param name="segSource"></param>
+        </member>
+        <member name="M:EDIX12Core.BaseLoop.MakeDeepCopy">
+            <summary>
+                Creates a deep copy of the loop by serialization using ToString() and ParseFrom().
+                Return value has type of Loop but actually has the same runtime type as the specific loop
+                against which this method is called (ex Loop2010AA).
+                NOTE - This currently loses the original element source!
+            </summary>
+        </member>
+        <member name="M:EDIX12Core.BaseLoop.GetSegmentPrefix(System.String,System.Char,System.Char)">
+            <summary>
+                Returns prefix indicating segment type, ex. NM1 or REF.
+            </summary>
+        </member>
+        <member name="M:EDIX12Core.BaseLoop.GetSegmentQualifier(System.String,System.Char)">
+            <summary>
+                Returns entity ID code or qualifier in first element.
+                NOTE: only valid for use with types like
+                NM1 (NM101), REF (REF01), AMT (AMT01) or DTP (DTP01)!
+            </summary>
+        </member>
+        <member name="M:EDIX12Core.BaseLoop.Equals(System.Object)">
+            <summary>
+                Considered equal if type of loop is same, and string element content is same.
+            </summary>
+            <param name="obj"></param>
+            <returns></returns>
+        </member>
+        <member name="T:EDIX12Core.BaseTransactionItem">
+            <summary>
+                Non-generic base class for LoopedTransactionItem&lt;T&gt; (the generic base for concrete transaction items such as
+                InstitutionalClaim or EligibilityInquiry).
+                This enables diferent kinds of transactions to collected or processed at a high level in a more uniform fashion.
+                NOTE: To do any useful detailed processing, a BaseTransactionItem object must still be cast to its actual concrete
+                type.
+            </summary>
+        </member>
+        <member name="T:EDIX12Core.CompositeElement">
+            <summary>
+                An Element type which contains SimplElements as component sub-elements.
+            </summary>
+        </member>
+        <member name="F:EDIX12Core.CompositeElement.subelements">
+            <summary>
+                Note that in this case collection itself is of the concrete type. (may not have to be)
+            </summary>
+        </member>
+        <member name="P:EDIX12Core.CompositeElement.ValueSubelementSeparator">
+            <summary>
+                Character used as delimiter for Set(), ToString() methods and property Value.
+                Default is ':' (colon)
+            </summary>
+        </member>
+        <member name="P:EDIX12Core.CompositeElement.SourceDelimiter">
+            <summary>
+                Character used as delimiter for Set() method and property Source.
+                Default is '|' (pipe)
+            </summary>
+        </member>
+        <member name="M:EDIX12Core.CompositeElement.Clear">
+            <summary>
+                Empties values and sources of component subelements, which also resets HasValue and IsUsed checks.
+            </summary>
+        </member>
+        <member name="M:EDIX12Core.CompositeElement.Set(System.String,System.String)">
+            <summary>
+                Similar to Set() of SimpleElement, but value and source strings here are delimited lists of
+                the data to be propagated to the subelements of this composite element.
+                Except for special case of source being completely empty (no subelements having a source),
+                source and value must have same number of entries, even if they are empty.
+            </summary>
+            <param name="value">Delimited with char in property ValueSubelementSeparator</param>
+            <param name="source">Delimited with char in property SourceDelimiter</param>
+        </member>
+        <member name="P:EDIX12Core.DecimalElement.NullZeroFormat">
+            <summary>
+                Special handling on string output as EDI.
+            </summary>
+        </member>
+        <member name="T:EDIX12Core.DictionaryLoop`1">
+            <summary>
+                Under development -- loop as dictionary of segmetns rather than ordered enumerable.
+            </summary>
+            <typeparam name="TLoopTypeEnum"></typeparam>
+        </member>
+        <member name="F:EDIX12Core.DictionaryLoop`1.segmentDictionary">
+            <summary>
+                Key is segment ID ("NM1"), value is list of some concrete Segment subclass.
+            </summary>
+        </member>
+        <member name="T:EDIX12Core.EDIControlInfo">
+            <summary>
+                Control numbers and Version for current envelope/context when traversing EDI interchange file.
+                Also includes position of segment within transaction (ST=1) -- otherwise 0(zero) when
+                outside an ST-SE.
+            </summary>
+        </member>
+        <member name="M:EDIX12Core.EDIControlInfo.#ctor(EDIX12Core.EDIControlInfo)">
+            <summary>
+                Copy constructor
+            </summary>
+            <param name="source"></param>
+        </member>
+        <member name="P:EDIX12Core.EDIControlInfo.ISA13ControlNum">
+            <summary>Interchange Control Number</summary>
+        </member>
+        <member name="P:EDIX12Core.EDIControlInfo.GS06ControlNum">
+            <summary>Group Control Number</summary>
+        </member>
+        <member name="P:EDIX12Core.EDIControlInfo.GS08FunctVersion">
+            <summary>Functional Group Version (ex 004010X098A1 for Prof, etc)</summary>
+        </member>
+        <member name="P:EDIX12Core.EDIControlInfo.ST02ControlNum">
+            <summary>Transaction Control Number</summary>
+        </member>
+        <member name="P:EDIX12Core.EDIControlInfo.TransSegmentPosition">
+            <summary>
+                Position of current segment within transaction (ST-SE, with ST at pos 1)
+            </summary>
+        </member>
+        <member name="P:EDIX12Core.EDIControlInfo.IntchgSegmentPosition">
+            <summary>
+                Position of current segment within file/interchange (with ISA at pos 1)
+            </summary>
+        </member>
+        <member name="M:EDIX12Core.EDIControlInfo.ToString">
+            <summary>
+                For tracking segment source. Omits ISA control number -- assuming only one ISA interchange per file.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:EDIX12Core.ICustomTransactionScanner`1.CheckTransactionSegment(System.String[],System.Int32,EDIX12Core.EDI_Delimiters)">
+            <summary>
+                Allows arbitrary scanning/tracking of segments *between* the ST and SE.
+                Array parameter segElements has segment ID (e.g. DTP or CLM) in position 0.
+            </summary>
+            <param name="segmentElements"></param>
+            <param name="segPositionInTransaction"></param>
+            <param name="transactionCtrlNum"></param>
+            <param name="groupCtrlNum"></param>
+        </member>
+        <member name="T:EDIX12Core.EDIEnvelopeScanner">
+            <summary>
+                Scans an EDI message to report versions, counts and control numbers of the different envelope levels:
+                interchange, functional groups, transactions.  Will throw exceptions during scan if first seg is not and ISA, or
+                nesting is incorrect.
+            </summary>
+        </member>
+        <member name="M:EDIX12Core.EDIEnvelopeScanner.Scan(System.IO.TextReader)">
+            <summary>
+                Will throw exceptions if first segment is not an ISA, or if ISA-IEA, GS-GE, and ST-SEs are not properly nested.
+            </summary>
+            <param name="ediReader"></param>
+            <returns></returns>
+        </member>
+        <member name="M:EDIX12Core.EDIEnvelopeScanner.Scan(System.IO.TextReader,System.String)">
+            <summary>
+                Intchg, Group and Transaction Info objects in result summary will include count of the specified additional
+                key segment ID -- example: "CLM" for counting claims in 837 transactions.
+            </summary>
+            <param name="ediReader"></param>
+            <param name="otherSegmentIDtoCount"></param>
+            <returns></returns>
+        </member>
+        <member name="M:EDIX12Core.EDIEnvelopeScanner.Scan(System.IO.TextReader,EDIX12Core.ICustomTransactionScanner)">
+            <summary>
+                Intchg, Group and Transaction Info objects in result summary will include count of the specified additional
+                key segment ID -- example: "CLM" for counting claims in 837 transactions.
+            </summary>
+            <param name="ediReader"></param>
+            <param name="otherSegmentIDtoCount"></param>
+            <returns></returns>
+        </member>
+        <member name="M:EDIX12Core.EDIEnvelopeScanner.DoScan(System.IO.TextReader,System.String,EDIX12Core.ICustomTransactionScanner)">
+            <summary>
+                Intchg, Group and Transaction Info objects in result summary will include count of the specified additional
+                key segment ID -- example: "CLM" for counting claims in 837 transactions.
+            </summary>
+            <param name="ediReader"></param>
+            <param name="otherSegmentIDtoCount"></param>
+            <returns></returns>
+        </member>
+        <member name="T:EDIX12Core.EDIEnvelopeSummary">
+            <summary>
+                Data structure continaing resul of an EDI envelope scan.
+            </summary>
+        </member>
+        <member name="P:EDIX12Core.EDIEnvelopeSummary.KeyTransactSegment">
+            <summary>
+                Caller-specified SegmentID value used for customized counting.
+            </summary>
+        </member>
+        <member name="M:EDIX12Core.EDIEnvelopeSummaryExtensions.ToXmlString(EDIX12Core.EDIEnvelopeSummary)">
+            <summary>
+                Returns the info in an EDI Envelope Summary object as an XML report (uses the built-in XmlSerializer).
+            </summary>
+            <param name="envsum"></param>
+            <returns></returns>
+        </member>
+        <member name="P:EDIX12Core.EDITransactionVersionInfo.ISA12version">
+            <summary>
+                Example:  00401 or 00501
+            </summary>
+        </member>
+        <member name="P:EDIX12Core.EDITransactionVersionInfo.GS01ID">
+            <summary>
+                Functional ID
+                Example:  'HC' for health care claim
+            </summary>
+        </member>
+        <member name="P:EDIX12Core.EDITransactionVersionInfo.GS08version">
+            <summary>
+                Functional version (institutional, professional, etc)
+                Also used in ST03 for 5010.
+                Example:  004010X096, 004010X098A1, 005010X223A2 etc.
+            </summary>
+        </member>
+        <member name="P:EDIX12Core.EDITransactionVersionInfo.ST01TransactSetID">
+            <summary>
+                Transaction type.
+                Example:  837, 270 etc.
+            </summary>
+        </member>
+        <member name="T:EDIX12Core.EDI_Date">
+            <summary>
+                Utility class for doing EDI date format to/from .NET DateTime transformations.
+            </summary>
+        </member>
+        <member name="M:EDIX12Core.EDI_Date.DateToD8(System.DateTime)">
+            <summary>
+                Returns date in digit format CCYYMMDD, or empty string if null.
+                ex. 20100704
+            </summary>
+        </member>
+        <member name="M:EDIX12Core.EDI_Date.DateToD6(System.DateTime)">
+            <summary>
+                Returns date in digit format YYMMDD, or empty string if null.
+                ex. 20100704
+            </summary>
+        </member>
+        <member name="M:EDIX12Core.EDI_Date.D8ToDate(System.String)">
+            <summary>
+                D8 format date CCYYMMDD as in DTP03s.
+            </summary>
+            <param name="d8Value"></param>
+            <returns></returns>
+        </member>
+        <member name="M:EDIX12Core.EDI_Date.D6ToDate(System.String)">
+            <summary>
+                D6 format date YYMMDD as in ISA09.
+            </summary>
+            <param name="d6Value"></param>
+            <returns></returns>
+        </member>
+        <member name="M:EDIX12Core.EDI_Date.RD8StartToDate(System.String)">
+            <summary>
+                Extract first part of date range from RD8 formatted date string.
+                ex. 20100704-20100706
+            </summary>
+        </member>
+        <member name="M:EDIX12Core.EDI_Date.RD8EndToDate(System.String)">
+            <summary>
+                Extract second part of date range from RD8 formatted date string.
+                ex. 20100704-20100706
+            </summary>
+        </member>
+        <member name="M:EDIX12Core.EDI_Date.DTtoDate(System.String)">
+            <summary>
+                Returns DateTime value from string in digit format CCYYMMDDHHMM.
+                ex. 201007041230
+            </summary>
+        </member>
+        <member name="M:EDIX12Core.EDI_Date.EDIDateToDate(System.String,System.String)">
+            <summary>
+                Parses dateTimePeriod per supplied format qualifier. If that is RD8, this only returns
+                the start of the date range.  An overload of this method exists to specify the ending date.
+                This is intended for dates embedded in segments like DMG (rather than DTP which has its own simpler methods).
+            </summary>
+        </member>
+        <member name="M:EDIX12Core.EDI_Date.EDIDateToDate(System.String,System.String,System.Int32)">
+            <summary>
+                Allows specifying which part of an RD8 date range to return (param datePart = 1 or 2).
+                For other date format qualifiers, that param is ignored.
+            </summary>
+        </member>
+        <member name="M:EDIX12Core.EDI_Date.EDIDateToDate(System.String)">
+            <summary>
+                Attempts to determine if the input date is a D6,D8, or RD8 date. If the date
+                is RD8, this only returns the start of the date range.
+                An overload of this method exists to specify the ending date.
+            </summary>
+        </member>
+        <member name="M:EDIX12Core.EDI_Date.EDIDateToDate(System.String,EDIX12Core.EDI_Date.DatePart)">
+            <summary>
+                Attempts to determine if the input date is a D6,D8, or RD8 date. If the date
+                is RD8, this only returns the start of the date range.
+                An overload of this method exists to specify the ending date.
+            </summary>
+        </member>
+        <member name="M:EDIX12Core.EDI_Date.DateToDT(System.DateTime)">
+            <summary>
+                Returns date/time in digit format CCYYMMDDHHMM, or empty string if null.
+                ex. 201007041230
+            </summary>
+        </member>
+        <member name="M:EDIX12Core.EDI_Date.DateToTM(System.DateTime)">
+            <summary>
+                Returns time in digit 24hr format HHMM, or empty string if null.
+                ex 1520  for 3:20pm
+            </summary>
+        </member>
+        <member name="T:EDIX12Core.EDI_Delimiters">
+            <summary>
+                Holds the set of delimiters used to read or write an EDI file,
+                defined in the ISA interchange envelope segment.
+            </summary>
+        </member>
+        <member name="F:EDIX12Core.EDI_Delimiters.elementSeparator">
+            <summary>Delimits elements in the segment.</summary>
+        </member>
+        <member name="F:EDIX12Core.EDI_Delimiters.subElemSeparator">
+            <summary>Delimits composite element's component sub-elements.</summary>
+        </member>
+        <member name="F:EDIX12Core.EDI_Delimiters.repetitionSeparator">
+            <summary>
+                Delimits repeating values within a non-composite element.
+                Value is defined in ISA11 (on 5010 only), default is caret '^'
+                Set to '\0' for 4010.
+            </summary>
+        </member>
+        <member name="F:EDIX12Core.EDI_Delimiters.terminator">
+            <summary>Delimits the segments in the EDI file.</summary>
+        </member>
+        <member name="P:EDIX12Core.EDI_Delimiters.AreValid">
+            <summary>
+                True if delimiters satisfy 2 checks: cannot be letter or number, and must be distinct values.
+            </summary>
+        </member>
+        <member name="P:EDIX12Core.EDI_Delimiters.Default4010">
+            <summary>
+                Returns a delimiters set with defaults chars for 4010 EDI.
+                Unused repetition is defaulted to ASCII null.
+            </summary>
+        </member>
+        <member name="P:EDIX12Core.EDI_Delimiters.Default5010">
+            <summary>
+                Returns a delimiters set with defaults chars for 5010 EDI (populates repetition separator).
+            </summary>
+        </member>
+        <member name="T:EDIX12Core.EDI_Exception">
+            <summary>
+                Custom exception class used to indicate fatal errors accessing/reading EDI 837 file.
+                "Normal" 837 syntax errors can be managed by the validator w/o exceptions.
+            </summary>
+        </member>
+        <member name="T:EDIX12Core.EDI_ExtensionMethods">
+            <summary>
+                Various general convenience extension methods (will show up in IntelliSense automatically where relevant to
+                objects).
+            </summary>
+        </member>
+        <member name="M:EDIX12Core.EDI_ExtensionMethods.AddNew``1(System.Collections.Generic.IList{``0})">
+            <summary>
+                Helper for working with generic Lists of concrete Segments as found in concrete Loops
+                Creates and adds a new Segment of the specific type T to the List and returns a reference to it for manipulation.
+                Enables chaining for streamlined syntax like
+                <example>this.REFsecIDs.AddNew().parseFrom(...)</example>
+            </summary>
+            <typeparam name="T">The specific type of Segment class, may be inferred from the IList param</typeparam>
+        </member>
+        <member name="M:EDIX12Core.EDI_ExtensionMethods.AddNew``1(System.Collections.Generic.IList{``0},System.Int32)">
+            <summary>
+                Helper for working with generic Lists of concrete Segments as found in concrete Loops
+                Creates and adds a new Segment of the specific type T to the List and returns a reference to it for manipulation.
+                Throws an exception if the new item would exceed the max size.
+                Enables chaining for streamlined syntax like
+                <example>this.REFsecIDs.AddNewRepeat().parseFrom(...)</example>
+            </summary>
+            <param name="maxsize">The size limit to be checked before creating/adding new item</param>
+            <typeparam name="T">The specific type of Segment class, may be inferred from the IList param</typeparam>
+        </member>
+        <member name="M:EDIX12Core.EDI_ExtensionMethods.InList``1(``0,System.Collections.Generic.IEnumerable{``0})">
+            <summary>
+                Use as if(item.InList(mycollection)){...
+            </summary>
+            <typeparam name="T">Type can usually be inferred from usage.</typeparam>
+            <param name="item"></param>
+            <param name="items"></param>
+            <returns></returns>
+        </member>
+        <member name="M:EDIX12Core.EDI_ExtensionMethods.InList``1(``0,``0[])">
+            <summary>
+                Use as if(item.InList(mycollection)){...
+            </summary>
+            <typeparam name="T">Type can usually be inferred from usage.</typeparam>
+            <param name="item"></param>
+            <param name="items"></param>
+            <returns></returns>
+        </member>
+        <member name="M:EDIX12Core.EDI_ExtensionMethods.Between``1(``0,``0,``0)">
+            <summary>
+                Inclusive 'in range' check.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="value"></param>
+            <param name="limit1"></param>
+            <param name="limit2"></param>
+            <returns></returns>
+        </member>
+        <member name="M:EDIX12Core.EDI_ExtensionMethods.SubstringSafe(System.String,System.Int32)">
+            <summary>
+                Length-aware version of Substring() -- trims result or returns empty string as needed
+                when desired chars are beyond actual length of source string.
+            </summary>
+        </member>
+        <member name="M:EDIX12Core.EDI_ExtensionMethods.SubstringSafe(System.String,System.Int32,System.Int32)">
+            <summary>
+                Length-aware version of Substring() -- trims result or returns empty string as needed
+                when desired chars are beyond actual length of source string. May return fewer than length chars!
+            </summary>
+        </member>
+        <member name="T:EDIX12Core.EDI_SegmentReader3">
+            <summary>
+                Use to extract segments from an EDI stream as strings. Automatically learns terminator etc from ISA segment
+                expected in first 106 chars/bytes.
+                Various properties provide additional info based on the latest segment read in.
+            </summary>
+        </member>
+        <member name="M:EDIX12Core.EDI_SegmentReader3.#ctor(System.IO.TextReader)">
+            <summary>
+                Passed an externally configured StreamReader (with optional text Encoding) or a StringReader
+                for processing the EDI data source.
+                Assumes there will only be one ISA-IEA interchange per data source.
+                Caller is responsbile for closing disposing the supplied stream/stringreader.
+            </summary>
+            <param name="EDIreader">
+                A StreamReader based on a FileStream, MemoryStream or NetworkStream (possibly wrapped
+                with a BufferedStream or custom FilteredStream), or a StringReader that points to
+                EDI data beginning with a standard ASC X12 fixed length ISA interghange envelope header segment.
+            </param>
+        </member>
+        <member name="P:EDIX12Core.EDI_SegmentReader3.AllowMultipleInterchangesInFile">
+            <summary>
+                Default is false (will throw exception on encountering second ISA-IEA).
+            </summary>
+        </member>
+        <member name="P:EDIX12Core.EDI_SegmentReader3.CurrentControlInfo">
+            <summary>
+                Information on current location in EDI stream (after last read).
+            </summary>
+        </member>
+        <member name="P:EDIX12Core.EDI_SegmentReader3.Delimiters">
+            <summary>
+                Delimiting chars for segments, elements, composite components. Read from file's
+                fixed length ISA segment and used for reading /parsing remaining segments.
+            </summary>
+        </member>
+        <member name="P:EDIX12Core.EDI_SegmentReader3.LineBreaks">
+            <summary>
+                Indicates if segments were formatted on separate lines.
+                Read-only, determined by reading the input file.
+            </summary>
+        </member>
+        <member name="P:EDIX12Core.EDI_SegmentReader3.NumSegmentsRead">
+            <summary>
+                Number of segments read since beginning of the physical file
+                -- note this is NOT the position within a transaction. For reference only.
+            </summary>
+        </member>
+        <member name="P:EDIX12Core.EDI_SegmentReader3.CurrentSegment">
+            <summary>
+                Segment read by last call to ReadSegment (or ReadISA)
+                Still includes segment terminator.
+            </summary>
+        </member>
+        <member name="P:EDIX12Core.EDI_SegmentReader3.SegmentElements">
+            <summary>
+                Array of parsed elements of Current Segment, with Segment ID stored in
+                index 0 so other EDI element numbers correspond with physical array indexes.
+            </summary>
+        </member>
+        <member name="P:EDIX12Core.EDI_SegmentReader3.SegmentID">
+            <summary>
+                Segment ID such as ISA, NM1, REF etc. (from 0th position in element array).
+            </summary>
+        </member>
+        <member name="P:EDIX12Core.EDI_SegmentReader3.EndOfData">
+            <summary>
+                True when no characters left on stream.
+            </summary>
+        </member>
+        <member name="M:EDIX12Core.EDI_SegmentReader3.ReadISA">
+            <summary>
+                Read first segment from file, the fixed length ISA, from which delimiters and terminator are
+                extracted for use by ReadSegment() for all others.
+                Returns true for success (appears to be an ISA - NOT a detailed validation)
+                and false on failure (not an ISA, truncated, or otherwise corrupted.)
+                Updates public properties CurrentSegment, SegmentElements, Delimiters, and NumSegmentsRead.
+            </summary>
+        </member>
+        <member name="M:EDIX12Core.EDI_SegmentReader3.ReadSegment">
+            <summary>
+                Use for all segments(variable-length, terminated) after the fixed-length ISA -- usually in a 'while' statement.
+                Returns true if a complete segment read, otherwise false for EOF (expected after last segment or
+                unexpected if file somehow truncated.)
+                Updates public properties CurrentSegment, SegmentElements, and NumSegmentsRead.
+                NOTE - ReadISA() must have been called first, once.
+            </summary>
+            <returns>String containing current segment or NULL on EOF</returns>
+        </member>
+        <member name="M:EDIX12Core.EDI_SegmentReader3.Read">
+            <summary>
+                Reads and returns the segment string.  This version is smart enough to call ReadISA versus
+                ReadSegment() as needed for simpler calling syntax.  Can also handle multiple ISA-IEA interchanges in same file.
+                Returns *null* if no more data.
+                DOES throw exceptions on errors.
+            </summary>
+        </member>
+        <member name="M:EDIX12Core.EDI_SegmentReader3.EndedWithValidIEA">
+            <summary>
+                Result of this checking method is only meaningful once End of Stream has been reached.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:EDIX12Core.EDI_SegmentReaderQueue">
+            <summary>
+                Wrapper class to expose segments returned by EDI_SegmentReader3 as a buffered queue with read-ahead to allow
+                Queue-like syntax with Peeking.
+            </summary>
+        </member>
+        <member name="M:EDIX12Core.EDI_SegmentReaderQueue.#ctor(System.IO.TextReader)">
+            <summary>
+                Constructor preloads the queue with first 250 segments.
+                Supplied TextReader is a StringReader or already open StreamReader (with optional text Encoding).
+                Default behavior throws exception on mote than one ISA in file.
+                Default size for segments pre-read into the internal queue whenever it is about to be empty is 250 segments at a
+                time.
+            </summary>
+        </member>
+        <member name="M:EDIX12Core.EDI_SegmentReaderQueue.#ctor(System.IO.TextReader,System.Boolean)">
+            <summary>
+                Constructor preloads the queue with first 250 segments.
+                Supplied TextReader is a StringReader or already open StreamReader (with optional text Encoding).
+                Can specify allowing multiple interchanges in file (ISA-IEA).
+                Default size for segments pre-read into the internal queue whenever it is about to be empty is 250 segments at a
+                time.
+            </summary>
+        </member>
+        <member name="M:EDIX12Core.EDI_SegmentReaderQueue.#ctor(System.IO.TextReader,System.Int32)">
+            <summary>
+                Constructor preloads the queue with first 'segmentsPerRead' segments.
+                Supplied TextReader is a StringReader or already open StreamReader (with optional text Encoding).
+                Param segmentsPerRead modifies the buffered reading into the internal queue. Default is 250 segments.
+            </summary>
+        </member>
+        <member name="M:EDIX12Core.EDI_SegmentReaderQueue.#ctor(System.IO.TextReader,System.Boolean,System.Int32)">
+            <summary>
+                Constructor preloads the queue with first 'segmentsPerRead' segments.
+                Supplied TextReader is a StringReader or already open StreamReader (with optional text Encoding).
+                Param segmentsPerRead modifies the buffered reading into the internal queue. Default is 250 segments.
+            </summary>
+        </member>
+        <member name="P:EDIX12Core.EDI_SegmentReaderQueue.AllowMultipleInterchangesInFile">
+            <summary>
+                Default is false (will throw exception on encountering second ISA-IEA).
+            </summary>
+        </member>
+        <member name="M:EDIX12Core.EDI_SegmentReaderQueue.LoadQueue">
+            <summary>
+                Returns true while more segments are still out on the stream, unread.
+                Returns false when the internal EDI sefgment reader returns null (none left)
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:EDIX12Core.EDI_SegmentReaderQueue.Peek">
+            <summary>
+                Expose the next segment without removing it from the queue.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:EDIX12Core.EDI_SegmentReaderQueue.Dequeue">
+            <summary>
+                Returns the next segment, removing it form the queue.
+                Queue will automatically refresh from underlying Textreader when almost empty.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:EDIX12Core.Element">
+            <summary>
+                Abstract base class for all concrete EDI data elements, including SimpleElement and CompositeElement.
+            </summary>
+        </member>
+        <member name="P:EDIX12Core.Element.HasValue">
+            <summary>
+                True if the value string data is not empty.
+            </summary>
+        </member>
+        <member name="P:EDIX12Core.Element.IsUsed">
+            <summary>
+                True if the element has been assigned a non-empty value OR a source.
+            </summary>
+        </member>
+        <member name="P:EDIX12Core.Element.Value">
+            <summary>
+                String data value for the given element location.
+            </summary>
+        </member>
+        <member name="P:EDIX12Core.Element.Source">
+            <summary>
+                Application-specific source of the stored value: location in original EDI, or some other scheme if programmatically
+                created
+                from some other non-EDI data format. Optional.
+            </summary>
+        </member>
+        <member name="M:EDIX12Core.Element.Set(System.String,System.String)">
+            <summary>
+                Set element data value and its corresponding source together.
+            </summary>
+            <param name="value"></param>
+            <param name="source"></param>
+        </member>
+        <member name="M:EDIX12Core.Element.Clear">
+            <summary>
+                Empties value and source, which also implicitly resets HasValue and IsUsed checks.
+            </summary>
+        </member>
+        <member name="T:EDIX12Core.ElementLocator">
+            <summary>
+                Holds element locator based on standard format such as REF02 or CLM11-1,
+                where last 2 digits show element position (w/ leading zero), and dashed value (if present)
+                indicates a subelement position within the composite element located by the first part.
+            </summary>
+        </member>
+        <member name="P:EDIX12Core.ElementLocator.IsSubelement">
+            <summary>
+                True if presence of subelement locator (ex 2 in  "HI01-2") indicates in a composite element.
+            </summary>
+        </member>
+        <member name="T:EDIX12Core.FilteredInputStream">
+            <summary>
+                IN DEVELOPMENT!!! -- see Read() for more work
+                WARNING - only use when raw text data is single-byte ASCII, ANSI or perhaps UTF-8.
+            </summary>
+        </member>
+        <member name="T:EDIX12Core.FuncGroupInfo">
+            <summary>
+                Summary of each Functional Group (GS-GE)
+            </summary>
+        </member>
+        <member name="P:EDIX12Core.FuncGroupInfo.GroupStart">
+            <summary> Position of GS segment in overall interchange (first = 1, not 0)</summary>
+        </member>
+        <member name="P:EDIX12Core.FuncGroupInfo.GroupEnd">
+            <summary> Position of GE segment in overall interchange (first = 1, not 0)</summary>
+        </member>
+        <member name="T:EDIX12Core.GenericSegment">
+            <summary>
+                A general purpose concrete Segment container class -- does not expose any elements thru fixed properties,
+                only the enumerable collection.
+            </summary>
+        </member>
+        <member name="M:EDIX12Core.GenericSegment.#ctor(System.String,System.Int32)">
+            <summary>
+                Creates generic segment with the internal list already holding numElements SimpleElements.
+            </summary>
+            <param name="segmentType"></param>
+            <param name="numElements"></param>
+        </member>
+        <member name="M:EDIX12Core.GenericSegment.Add(EDIX12Core.Element)">
+            <summary>
+                Supply a concrete SimpleElement, CompositeElement, or UnusedElement.
+            </summary>
+            <param name="element"></param>
+        </member>
+        <member name="M:EDIX12Core.GenericSegment.Clear">
+            <summary>
+                Clears elements in collection, but leaves empty elements in internal list by default.
+            </summary>
+        </member>
+        <member name="M:EDIX12Core.GenericSegment.Clear(System.Boolean)">
+            <summary>
+                Clears elements in collection, when param is true the internal list is cleared (emptied).
+            </summary>
+        </member>
+        <member name="T:EDIX12Core.IntchgInfo">
+            <summary>
+                Summary of each interchange (ISA-IEA).
+            </summary>
+        </member>
+        <member name="P:EDIX12Core.IntchgInfo.SenderISA06">
+            <summary>
+                Any padding spaces are trimmed from the ID.
+            </summary>
+        </member>
+        <member name="P:EDIX12Core.IntchgInfo.ReceiverISA08">
+            <summary>
+                Any padding spaces are trimmed from the ID.
+            </summary>
+        </member>
+        <member name="P:EDIX12Core.IntchgInfo.DateTimeISA0910">
+            <summary>
+                Combined from ISA09 and ISA10 -- may throw exception if bad!
+            </summary>
+        </member>
+        <member name="P:EDIX12Core.IntchgInfo.InterchangeStart">
+            <summary> Position of ISA segment in overall interchange (first = 1, not 0)</summary>
+        </member>
+        <member name="P:EDIX12Core.IntchgInfo.InterchangeEnd">
+            <summary> Position of IEA segment in overall interchange (first = 1, not 0)</summary>
+        </member>
+        <member name="T:EDIX12Core.ITransactionLevelMapper`2">
+            <summary>
+                Concrete implementations are used to determine 'level' within hierarchical transaction from current loop's type.
+            </summary>
+            <typeparam name="TLoopTypeEnum"></typeparam>
+            <typeparam name="TTransLevelEnum"></typeparam>
+        </member>
+        <member name="P:EDIX12Core.ITransactionLevelMapper`2.LevelNestingOrder">
+            <summary>
+                The actual level enums (the dictionary keys) for the transaction, in top down order of one-to-many nesting.
+                Must NOT include any trailer levels!
+            </summary>
+        </member>
+        <member name="P:EDIX12Core.ITransactionLevelMapper`2.LevelStartingLoops">
+            <summary>
+                Returns the loop type which indicates start of a level (of one-to-many relationships, not just actual HLs).
+            </summary>
+        </member>
+        <member name="P:EDIX12Core.ITransactionLevelMapper`2.HL03OrderingMap">
+            <summary>
+                Explicitly defines 'generations' of HL levels, used for cleaning up HLs merged using a batchbuilder.
+                Cannot assume that the HL03 values (20, 19, 22 etc)
+                defined for the transaction will always be in ascending order, so a map is needed.
+            </summary>
+        </member>
+        <member name="M:EDIX12Core.ITransactionLevelMapper`2.MapToLevel(`0)">
+            <summary>
+                Returns level for the supplied loop type.
+            </summary>
+            <param name="loopType"></param>
+            <returns></returns>
+        </member>
+        <member name="F:EDIX12Core.LengthCheckingBehavior.DoNothing">
+            <summary>
+                Default behavior allows any length for element value.
+                Useful for relaxing inbound parsing.
+            </summary>
+        </member>
+        <member name="F:EDIX12Core.LengthCheckingBehavior.TrimAndPad">
+            <summary>
+                Trim element value to max length when it is set.
+                Pad short values up to the min length (when data is present), except where
+                empty/unused value is allowed by spec. Fixed-length elements as in ISA segment will always pad.
+            </summary>
+        </member>
+        <member name="F:EDIX12Core.LengthCheckingBehavior.ThrowException">
+            <summary>
+                Will throw an ArgumentException if element value does not meet min/max length.
+            </summary>
+        </member>
+        <member name="T:EDIX12Core.LevelStartingLoopMap`2">
+            <summary>
+                Supports generic method of defining/determining which loop type starts a new level (for a transaction set)
+            </summary>
+            <typeparam name="TLoopLevelEnum"></typeparam>
+            <typeparam name="TLoopTypeEnum"></typeparam>
+        </member>
+        <member name="P:EDIX12Core.LevelStartingLoopMap`2.LevelNestingOrder">
+            <summary>
+                The actual level enums (the dictionary keys) for the transaction, in top down order of one-to-many nesting.
+                Must NOT include any trailer levels!
+            </summary>
+        </member>
+        <member name="T:EDIX12Core.Loop`1">
+            <summary>
+                Base class for all strongly typed loops (constrained by loop type enum),
+                whether based on named segment properties or dictionary
+            </summary>
+            <typeparam name="TLoopTypeEnum"></typeparam>
+        </member>
+        <member name="M:EDIX12Core.Loop`1.MakeDeepCopy">
+            <summary>
+                Creates a deep copy of the loop by serialization using ToString() and ParseFrom().
+                Return value has type of Loop but actually has the same runtime type as the specific loop
+                against which this method is called (ex Loop2010AA).
+                NOTE - This currently loses the original element source!
+            </summary>
+        </member>
+        <member name="T:EDIX12Core.LoopEnumMap`1">
+            <summary>
+                "Carrier" object used identify the values within each transaction's LoopType enum
+                which fulfill the special roles of intchg, group, transaction headers and trailers
+                for a neutral way to detect them in generic code.
+                Subclass constructor sets the values.
+            </summary>
+            <typeparam name="TLoopTypeEnum"></typeparam>
+        </member>
+        <member name="T:EDIX12Core.LoopSegmentSourceGenerator">
+            <summary>
+                Assist in determining source of segments within a loop from position where the loop begins (in real EDI).
+            </summary>
+        </member>
+        <member name="M:EDIX12Core.LoopSegmentSourceGenerator.#ctor(EDIX12Core.EDIControlInfo,System.String)">
+            <summary>
+                Supply with reader info on the loop's starting trigger segment, to be starting point
+                for updating source for each segment present in loop.
+                Safely handles null value for EDIControlInfo param.
+            </summary>
+        </member>
+        <member name="M:EDIX12Core.LoopSegmentSourceGenerator.GetSourceThisSegment">
+            <summary>
+                Will autocount and format the source based on loop trigger segment info supplied in constructor.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:EDIX12Core.NamespaceDoc">
+            <summary>
+                The <see cref="N:EDIX12Core" /> namespace contains classes for low level utilities and abstract base classes forthe
+                EDI data strucures.
+            </summary>
+        </member>
+        <member name="T:EDIX12Core.NotUsedElement">
+            <summary>
+                Dummy element to fill in gaps in segment's IEnumerable&lt;Element&gt; collection so parsing and tostring() work
+                Silently ignores any attempts to change data. Always has a value of empty string.
+                SINGLETON pattern -- access the single instance thru property Instance.
+            </summary>
+        </member>
+        <member name="M:EDIX12Core.NotUsedElement.#ctor">
+            <summary>
+                SINGLETON pattern -- access the single instance thru property Instance instead of trying to call private
+                constructor.
+            </summary>
+        </member>
+        <member name="M:EDIX12Core.NotUsedElement.Clear">
+            <summary>
+                Does nothing.
+            </summary>
+        </member>
+        <member name="M:EDIX12Core.NotUsedElement.Set(System.String,System.String)">
+            <summary>
+                Throws exception if any value other than empty string or null is passed.  Source is ignored.
+            </summary>
+        </member>
+        <member name="T:EDIX12Core.NotUsedStrictElement">
+            <summary>
+                Dummy element to fill in gaps in segment's IEnumerable&lt;Element&gt; collection so parsing and tostring() work
+                Always has a value of empty string. THIS VERSION THROWS EXCEPTION ON SETTING A NON-EMPTY VALUE.
+                SINGLETON pattern -- access the single instance thru property Instance.
+            </summary>
+        </member>
+        <member name="M:EDIX12Core.NotUsedStrictElement.#ctor">
+            <summary>
+                SINGLETON pattern -- access the single instance thru property Instance instead of trying to call private
+                constructor.
+            </summary>
+        </member>
+        <member name="M:EDIX12Core.NotUsedStrictElement.Clear">
+            <summary>
+                Does nothing.
+            </summary>
+        </member>
+        <member name="M:EDIX12Core.NotUsedStrictElement.Set(System.String,System.String)">
+            <summary>
+                Throws exception if attempt is made to set any value other than empty string or null.  Source is ignored.
+            </summary>
+        </member>
+        <member name="T:EDIX12Core.PackingLevels`1">
+            <summary>
+                Define the 'top down' order of the levels for a transaction type.
+                Subclass constructor loads actual list.
+            </summary>
+            <typeparam name="TLoopLevelEnum"></typeparam>
+        </member>
+        <member name="T:EDIX12Core.ParsingSegmentFactory">
+            <summary>
+                Base class for transaction-specific segment factories.
+            </summary>
+        </member>
+        <member name="M:EDIX12Core.ParsingSegmentFactory.CreateSegment(System.String)">
+            <summary>
+                Returns an empty segment object of proper subtype.
+            </summary>
+        </member>
+        <member name="M:EDIX12Core.ParsingSegmentFactory.CreateMySegment(System.String)">
+            <summary>
+                Implement the factory guts for your family of segment IDs.
+            </summary>
+            <param name="SegmentID"></param>
+            <returns></returns>
+        </member>
+        <member name="M:EDIX12Core.ParsingSegmentFactory.CreateSegment(System.String,System.Nullable{EDIX12Core.EDI_Delimiters})">
+            <summary>
+                Returns a segment of proper type loaded with the data, parsed from supplied delimiters.
+                Passing null for delims uses defaults of * : ~
+            </summary>
+        </member>
+        <member name="T:EDIX12Core.RepeatingElement">
+            <summary>
+                A simple Element which may contain a repeating list of multiple values, delimited by the
+                'repetition separator' defined in ISA11 (default is caret  '^').
+                Iterate over RepeatList or access by index(0 based).
+                Currently assumes will NOT contain any composites.
+            </summary>
+        </member>
+        <member name="M:EDIX12Core.RepeatingElement.#ctor(System.Int32,System.Char)">
+            <summary>
+                Use MaxRepeats of 0 if not specifiying a limit
+            </summary>
+            <param name="maxRepeats"></param>
+            <param name="repetitionSeparator"></param>
+        </member>
+        <member name="P:EDIX12Core.RepeatingElement.MaxRepeats">
+            <summary>
+                Value of zero means no limit set (default)
+            </summary>
+        </member>
+        <member name="P:EDIX12Core.RepeatingElement.HasMaxRepeats">
+            <summary>
+                True if number of values is already at max count (if one defined --> 0).
+            </summary>
+        </member>
+        <member name="P:EDIX12Core.RepeatingElement.ValueRepeatSeparator">
+            <summary>
+                Character used as delimiter for Set(), ToString() methods and property Value.
+                Default is ':' (colon)
+            </summary>
+        </member>
+        <member name="P:EDIX12Core.RepeatingElement.SourceDelimiter">
+            <summary>
+                Character used as delimiter for Set() method and property Source.
+                Default is '|' (pipe)
+            </summary>
+        </member>
+        <member name="M:EDIX12Core.RepeatingElement.Clear">
+            <summary>
+                Empties values and sources of component subelements, which also resets HasValue and IsUsed checks.
+            </summary>
+        </member>
+        <member name="M:EDIX12Core.RepeatingElement.Set(System.String,System.String)">
+            <summary>
+                Similar to Set() of SimpleElement, but value here is delimited list of
+                the data to be propagated to the internal repeats of this composite element.
+            </summary>
+            <param name="value">Delimited with char already in property ValueSubelementSeparator</param>
+            <param name="source"></param>
+        </member>
+        <member name="M:EDIX12Core.RepeatingElement.Set(System.Collections.Generic.IEnumerable{System.String},System.String)">
+            <summary>
+                Similar to Set() of SimpleElement, but values is an enumeration/list of
+                the data to be propagated to the internal repeats of this element.
+            </summary>
+            <param name="value">Delimited with char in property ValueSubelementSeparator</param>
+            <param name="source"></param>
+        </member>
+        <member name="T:EDIX12Core.RepeatingSegmentList`1">
+            <summary>
+                A generic (typed) collection to manage repeating segments in a loop
+                instead of directly exposing a common List. Optional max size (throws exception on too many).
+                Subclassed from List. Can also check uniqueness of a specified qualifier.
+            </summary>
+            <typeparam name="T">The specific sublcassed Segment type (or may be of the base Segment)</typeparam>
+        </member>
+        <member name="M:EDIX12Core.RepeatingSegmentList`1.#ctor(System.Int32)">
+            <summary>
+                Enable a fixed max number of repeats.  Throws an exceptionif try to add too many.
+            </summary>
+            <param name="maxRepeat">A number greater than zero to enable size checking.</param>
+        </member>
+        <member name="M:EDIX12Core.RepeatingSegmentList`1.AddNew">
+            <summary>
+                Creates and adds a new segment of the specific type to the repeating segments collection, and
+                also returns a reference to the new segment.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:EDIX12Core.RepeatingSegmentList`1.QualifiersAreUnique(System.Int32)">
+            <summary>
+                Optional - Check to see if qualifier at a specified location does not appear more than once in collection
+                -- in other words, that all qualifier values are unique.
+            </summary>
+            <param name="qualifierElemPosition">For example, 1 for checking REF01 in REF segment</param>
+        </member>
+        <member name="T:EDIX12Core.Segment">
+            <summary>
+                Abstract base class for all concrete segment types. Defines segment as a named, ordered collection of Elements.
+            </summary>
+        </member>
+        <member name="F:EDIX12Core.Segment.elements">
+            <summary>
+                Will hold Simple and CompositeElements in IG order.
+            </summary>
+        </member>
+        <member name="P:EDIX12Core.Segment.Name">
+            <summary>
+                Segment ID, e.x. "NM1"
+            </summary>
+        </member>
+        <member name="P:EDIX12Core.Segment.PositionInTransaction">
+            <summary>
+                Set by by batch reader, or manually -- default zero for ISA=IEA/GS-GE, or if manually built
+            </summary>
+        </member>
+        <member name="P:EDIX12Core.Segment.Item(System.Int32)">
+            <summary>
+                Indexed access to element within segment.  Does not locate subelements within composites.
+            </summary>
+            <param name="elementPosition">First element is at position 1, not zero.</param>
+        </member>
+        <member name="P:EDIX12Core.Segment.Item(System.String)">
+            <summary>
+                Indexed access to element (or subelement) by IG standard element locator tag.
+            </summary>
+            ///
+            <param name="locator">Locator such as NM103 or CLM05-2</param>
+        </member>
+        <member name="P:EDIX12Core.Segment.Item(EDIX12Core.ElementLocator)">
+            <summary>
+                Indexed access to element (or subelement) by IG standard element locator tag.
+            </summary>
+            ///
+            <param name="locator">Locator such as NM103 or CLM05-2</param>
+        </member>
+        <member name="M:EDIX12Core.Segment.Clear">
+            <summary>
+                Clears elements.
+            </summary>
+        </member>
+        <member name="M:EDIX12Core.Segment.ToString">
+            <summary>
+                Uses default delimiters: element separator *,
+            </summary>
+        </member>
+        <member name="M:EDIX12Core.Segment.ParseFrom(System.String,System.String)">
+            <summary>
+                Load this instance from an EDI segment string
+                Assumes default delimiter chars '*' ':' '^' '~'
+                Otherwise use other overloads.
+            </summary>
+            <param name="segmentString"></param>
+            <param name="segmentSource"></param>
+        </member>
+        <member name="M:EDIX12Core.Segment.ParseFrom(System.String,EDIX12Core.EDI_Delimiters,System.String)">
+            <summary>
+                Load this instance from an EDI segment string
+                Can specify custom delimiters.
+            </summary>
+        </member>
+        <member name="M:EDIX12Core.Segment.Equals(System.Object)">
+            <summary>
+                Considered equal if type of segment is same, and string element content (including seg ID, ex REF) is same.
+                Sources are ignored!
+            </summary>
+            <param name="obj"></param>
+            <returns></returns>
+        </member>
+        <member name="T:EDIX12Core.SegmentGE">
+            <summary>
+                Global segment: Functional Group Trailer - GE02 control number should match GS06.
+            </summary>
+        </member>
+        <member name="F:EDIX12Core.SegmentGE.GE01_NumInclTransacts">
+            <summary></summary>
+        </member>
+        <member name="F:EDIX12Core.SegmentGE.GE02_GrpCtrlNum">
+            <summary>Control Number</summary>
+        </member>
+        <member name="T:EDIX12Core.SegmentGS">
+            <summary>
+                Global segment: Functional Group Header -- GS06 control number and GS08 are significant for non-837 data.
+            </summary>
+        </member>
+        <member name="F:EDIX12Core.SegmentGS.GS01_FuncID">
+            <summary>
+                Example: 'HC'  Healthcare Claim
+            </summary>
+        </member>
+        <member name="F:EDIX12Core.SegmentGS.GS04_Date">
+            <summary>
+                Format is YYMMDD.
+            </summary>
+        </member>
+        <member name="F:EDIX12Core.SegmentGS.GS05_Time">
+            <summary>
+                Format is HHMM.
+            </summary>
+        </member>
+        <member name="F:EDIX12Core.SegmentGS.GS08_Version">
+            <summary>
+                Example: 004010X098A1  -- A1 rev of Professional(physician)
+            </summary>
+        </member>
+        <member name="T:EDIX12Core.SegmentIEA">
+            <summary>
+                Global segment: Interchange Trailer - IEA02 should match ISA13
+                for claims that do not originate from an actual 837.
+            </summary>
+        </member>
+        <member name="F:EDIX12Core.SegmentIEA.IEA01_NumInclFunctGrps">
+            <summary></summary>
+        </member>
+        <member name="F:EDIX12Core.SegmentIEA.IEA02_IntchgCtrlNum">
+            <summary>Control Number</summary>
+        </member>
+        <member name="T:EDIX12Core.SegmentISA">
+            <summary>
+                Global segment: Interchange Envelope header -- note this has fixed length segments
+            </summary>
+        </member>
+        <member name="M:EDIX12Core.SegmentISA.#ctor">
+            <summary>
+                Default constructor -- all element values forced upper case when set, fixed lengths are enforced
+                (throwing exceptions) but with automatic padding on ISA02/4/6/8/13.  Mixed case is preserved on ISA02/04.
+                Equivalent of overload ctor with both params set true.
+            </summary>
+        </member>
+        <member name="M:EDIX12Core.SegmentISA.#ctor(System.Boolean,System.Boolean)">
+            <summary>
+                Configurable constructor for value setting/checking behavior for certain elements.
+            </summary>
+            <param name="autoPadRightAuthSecurIdsCtrl">
+                Default is true (default ctor). True will pad ISA 2,4,6,8,13 to proper
+                length with spaces to right as needed (does NOT trim!).
+            </param>
+            <param name="allowMixedCaseAuthSecurInfo">
+                Default is true (default ctor).  True will retain values for ISA02(authorization)
+                and ISA04(security) with original casing.
+            </param>
+        </member>
+        <member name="P:EDIX12Core.SegmentISA.ISA02_AuthorInfo">
+            <summary>
+                May need to .Trim() to remove any trailing padding spaces when using value.
+                This may contain lower case characters.
+            </summary>
+        </member>
+        <member name="P:EDIX12Core.SegmentISA.ISA04_SecureInfo">
+            <summary>
+                May need to .Trim() to remove any trailing padding spaces.
+                This may contain lower case characters.
+            </summary>
+        </member>
+        <member name="P:EDIX12Core.SegmentISA.ISA06_SenderID">
+            <summary>
+                May need to .Trim() to remove any trailing padding spaces.
+            </summary>
+        </member>
+        <member name="P:EDIX12Core.SegmentISA.ISA08_RecvrID">
+            <summary>
+                May need to .Trim() to remove any trailing padding spaces.
+            </summary>
+        </member>
+        <member name="P:EDIX12Core.SegmentISA.ISA09_IntchgDate">
+            <summary>Submit date.</summary>
+        </member>
+        <member name="P:EDIX12Core.SegmentISA.ISA11_IntchgStdID">
+            <summary>
+                In 5010 (ISA12=00501) ISA11 contains a 'repetition separator' character as an additional delimiter here.
+            </summary>
+        </member>
+        <member name="P:EDIX12Core.SegmentISA.ISA13_IntchgCtrlNum">
+            <summary>Control Number, may need to trim to remove any trailing padding spaces.</summary>
+        </member>
+        <member name="P:EDIX12Core.SegmentISA.DateTimeSubmitted">
+            <summary>
+                Combines ISA09 (EDI date) and ISA10 (time).
+                Will be null if not parseable.
+            </summary>
+        </member>
+        <member name="M:EDIX12Core.SegmentISA.ToString">
+            <summary>
+                For ISA segment this overwrites ISA16 subelement separator value with the default : (colon)
+                used all other segment's default ToString() -- only in the returned string.  Internal value
+                is not changed!
+            </summary>
+        </member>
+        <member name="M:EDIX12Core.SegmentISA.ToString(EDIX12Core.EDI_Delimiters)">
+            <summary>
+                For ISA this also overwrites ISA16 (in output string only!) with the supplied subelementSeparator.
+                The internal ISA16 element value is not changed.
+            </summary>
+            <param name="elementSeparator"></param>
+            <param name="subelementSeparator"></param>
+            <param name="terminator"></param>
+            <returns></returns>
+        </member>
+        <!-- Badly formed XML comment ignored for member "T:EDIX12Core.SegmentRJ" -->
+        <member name="F:EDIX12Core.SegmentRJ.RJ01">
+            <summary>ID Qualifier</summary>
+        </member>
+        <member name="F:EDIX12Core.SegmentRJ.RJ02">
+            <summary>ID Code</summary>
+        </member>
+        <member name="F:EDIX12Core.SegmentRJ.RJ03">
+            <summary>Composite -1 is, -2 is, -3 is</summary>
+        </member>
+        <member name="M:EDIX12Core.SegmentRJ.#ctor">
+            <summary>FAKE SEGMENT FOR DEVELOPMENT ONLY! </summary>
+        </member>
+        <member name="T:EDIX12Core.SimpleElement">
+            <summary>
+                Simple element (may also be a component of a composite or repeating element).
+                Value text is forced to uppercase.
+            </summary>
+        </member>
+        <member name="M:EDIX12Core.SimpleElement.Clear">
+            <summary>
+                Empties value and source, which also resets HasValue and IsUsed checks.
+            </summary>
+        </member>
+        <member name="M:EDIX12Core.SimpleElement.ChangeLengthChecking(EDIX12Core.LengthCheckingBehavior)">
+            <summary>
+                Rechecks element value immediately, if behavior changed.
+            </summary>
+            <param name="behavior"></param>
+        </member>
+        <member name="M:EDIX12Core.SimpleElement.CheckLength">
+            <summary>
+                CHecks length per current behavior in property LengthChecking
+            </summary>
+        </member>
+        <member name="T:EDIX12Core.SimpleISAElement">
+            <summary>
+                Special variation of the Simple element...
+                Special casing and length behavior for fixed length elements in the ISA segment.
+            </summary>
+        </member>
+        <member name="M:EDIX12Core.SimpleISAElement.#ctor(System.Int32)">
+            <summary>
+                By default does not pad, but does force uppercase.
+            </summary>
+        </member>
+        <member name="M:EDIX12Core.SimpleISAElement.#ctor(System.Int32,System.Boolean)">
+            <summary>
+                Forced uppercase by default.
+            </summary>
+        </member>
+        <member name="M:EDIX12Core.SimpleISAElement.#ctor(System.Int32,System.Boolean,System.Boolean)">
+            <summary>
+                Fully customize.
+            </summary>
+        </member>
+        <member name="P:EDIX12Core.SimpleISAElement.PadRightAsNeeded">
+            <summary>
+                Default is false.
+            </summary>
+        </member>
+        <member name="P:EDIX12Core.SimpleISAElement.ForceUpperCase">
+            <summary>
+                Default is true.
+            </summary>
+        </member>
+        <member name="M:EDIX12Core.SimpleISAElement.Clear">
+            <summary>
+                Empties value and source, which also resets HasValue and IsUsed checks.
+            </summary>
+        </member>
+        <member name="T:EDIX12Core.TransactInfo">
+            <summary>
+                Summary of each Transaction (ST-SE)
+            </summary>
+        </member>
+        <member name="P:EDIX12Core.TransactInfo.NumSegmentsActual">
+            <summary>
+                Includes ST and SE.
+            </summary>
+        </member>
+        <member name="P:EDIX12Core.TransactInfo.TransactionStart">
+            <summary> Position of ST segment in overall interchange (first = 1, not 0)</summary>
+        </member>
+        <member name="P:EDIX12Core.TransactInfo.TransactionEnd">
+            <summary> Position of SE segment in overall interchange (first = 1, not 0)</summary>
+        </member>
+        <member name="T:EDIX12Core.UnexpectedSegmentHandling">
+            <summary>
+                Param for loop parser methods, defines handling of unexpteced segments within the boundaries of a loop
+                (wrong segment ID/name, or an invalid qualifier such as a bad REF01).
+            </summary>
+        </member>
+        <member name="F:EDIX12Core.UnexpectedSegmentHandling.ThrowException">
+            <summary>
+                Throw an exception during parse.
+            </summary>
+        </member>
+        <member name="F:EDIX12Core.UnexpectedSegmentHandling.Capture">
+            <summary>
+                Store in the loop's
+                'unexpected' collection of genric loops for later special handling.
+            </summary>
+        </member>
+        <member name="F:EDIX12Core.UnexpectedSegmentHandling.SilentIgnore">
+            <summary>
+                Ignore/discard without error.
+            </summary>
+        </member>
+    </members>
+</doc>

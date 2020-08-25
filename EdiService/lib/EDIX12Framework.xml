@@ -1,0 +1,1105 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>EDIX12Framework</name>
+    </assembly>
+    <members>
+        <member name="T:EDIX12Framework.BackValidatingStateMachine`1">
+            <summary>
+                Looks 'backward' to see if coming from previous state to this new one was a valid transition.
+                Throws exception on invalid one.
+            </summary>
+            <typeparam name="TState">State variable type. An enum is optimal.</typeparam>
+        </member>
+        <member name="F:EDIX12Framework.BackValidatingStateMachine`1.ExpectedStatesBefore">
+            <summary>
+                Key is proposed next state, value is IEnumerable of of expected/allowed 'previous' states (for rear-looking
+                transition check).
+                The *static* constructor of derived concrete class should construct and populate this transition table.
+            </summary>
+        </member>
+        <member name="T:EDIX12Framework.BatchBuilder`8">
+            <summary>
+                Base class for packing individual claims, etc in to an in-memory tree, for emitting valid batch EDI.
+            </summary>
+            <typeparam name="TTransItem"></typeparam>
+            <typeparam name="TLoopFactory"></typeparam>
+            <typeparam name="TLoopFamily"></typeparam>
+            <typeparam name="TLoopEnumMap"></typeparam>
+            <typeparam name="TLoopStateMachine"></typeparam>
+            <typeparam name="TLevelMapper"></typeparam>
+            <typeparam name="TLoopTypeEnum"></typeparam>
+            <typeparam name="TLoopLevelEnum"></typeparam>
+        </member>
+        <member name="M:EDIX12Framework.BatchBuilder`8.#ctor(`7)">
+            <summary>
+                Supply the lowest level down to which packing/consolidation of subtrees should occur.
+                Uses default string-based level node comparison.
+            </summary>
+            <param name="lowestPackingLevel"></param>
+        </member>
+        <member name="M:EDIX12Framework.BatchBuilder`8.#ctor(`7,System.Collections.Generic.IEqualityComparer{EDIX12Framework.LoopLevelTreeNode{`2,`5,`7,`6}})">
+            <summary>
+                Supply the lowest level down to which packing/consolidation of subtrees should occur.
+                Accepts a custom level node comparer for specialized packing behavior.
+            </summary>
+        </member>
+        <member name="P:EDIX12Framework.BatchBuilder`8.HasItems">
+            <summary>
+                Returns false if no items have actually been added into internal batch tree.
+            </summary>
+        </member>
+        <member name="P:EDIX12Framework.BatchBuilder`8.ItemCount">
+            <summary>
+                Count of items added so far to internal batch tree.
+            </summary>
+        </member>
+        <member name="M:EDIX12Framework.BatchBuilder`8.GetBatchOrderedLoops">
+            <summary>
+                Throws exception if called when no items have been added.  May check first with property HasItems or ItemCount.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:EDIX12Framework.BatchBuilder`8.CheckItemTree(EDIX12Framework.LoopLevelTree{`2,`6,`5,`7})">
+            <summary>
+                Ensures ItemTree is one node 'wide' all the way down (for the levels that matter) before walking it
+                for the purporses of merging into the batch.
+                Throws exception on malformed item tree.
+            </summary>
+            <param name="itemLevelTree"></param>
+        </member>
+        <member name="M:EDIX12Framework.BatchBuilder`8.InsertTransactionSummaries(EDIX12Framework.BatchBuilderTransactionSummaryMap{`2,`6})">
+            <summary>
+                Shadowing Insert method on concrete batchbuilder should restrict type of the loop to be mapped.
+            </summary>
+            <param name="summaryMap"></param>
+        </member>
+        <member name="T:EDIX12Framework.BatchBuilderTransactionSummaryMap`2">
+            <summary>
+                For loading transaction summary segments into batch builder tree (after all items: claims etc, have been added).
+                'Get...' returns null if no entry exists for that group and transaction combination.
+            </summary>
+            <typeparam name="TLoopFamily"></typeparam>
+            <typeparam name="TLoopTypeEnum"></typeparam>
+        </member>
+        <member name="M:EDIX12Framework.BatchBuilderTransactionSummaryMap`2.Add(System.String,System.String,`0)">
+            <summary>
+                Concrete class will restrict the type of loop to appropriate virtual summary loop.
+            </summary>
+            <param name="gsCtrlNum"></param>
+            <param name="stCtrlNum"></param>
+            <param name="transactionSummaryLoop"></param>
+        </member>
+        <member name="M:EDIX12Framework.BatchBuilderTransactionSummaryMap`2.GetTransactionSummary(System.String,System.String)">
+            <summary>
+                Returns null if no entry exists.
+            </summary>
+            <param name="gsCtrlNum"></param>
+            <param name="stCtrlNum"></param>
+            <returns></returns>
+        </member>
+        <member name="T:EDIX12Framework.EDI2XMLHelpers">
+            <summary>
+                Contains extension methods to output segment, loop, and loopleveltree as XML to support
+                SSI legacy internal format for EDI data (as used by Vertical).
+            </summary>
+        </member>
+        <member name="M:EDIX12Framework.EDI2XMLHelpers.ToXml(EDIX12Core.Segment)">
+            <summary>
+                Generates xml object for one segment.
+            </summary>
+            <param name="seg"></param>
+            <returns></returns>
+        </member>
+        <member name="M:EDIX12Framework.EDI2XMLHelpers.ToXmlString(EDIX12Core.Segment)">
+            <summary>
+                Generates xml string for a segment.
+            </summary>
+            <param name="seg"></param>
+            <returns></returns>
+        </member>
+        <member name="M:EDIX12Framework.EDI2XMLHelpers.ToXmlString(EDIX12Core.Segment,System.Xml.Linq.SaveOptions)">
+            <summary>
+                Generates xml string for a segment, allowing for additional formatting options.
+            </summary>
+            <param name="seg"></param>
+            <returns></returns>
+        </member>
+        <member name="M:EDIX12Framework.EDI2XMLHelpers.ToXml``1(EDIX12Core.Loop{``0})">
+            <summary>
+                Generates XML with the trigger segment wrapping the other segments within the loop.
+                For loop segments wrapped with loop name, use the other overload.
+            </summary>
+            <typeparam name="TLoopTypeEnum"></typeparam>
+            <param name="loop"></param>
+            <returns></returns>
+        </member>
+        <member name="M:EDIX12Framework.EDI2XMLHelpers.ToXml``1(EDIX12Core.Loop{``0},EDIX12Framework.LoopXMLNestingStyle)">
+            <summary>
+                Generate XML structure from EDI loop objects in one of two formats.
+            </summary>
+            <typeparam name="TLoopTypeEnum"></typeparam>
+            <param name="loop">EDI Loop object</param>
+            <param name="style">Choose nesting style -- wrap with loop name or trigger segment (legacy format).</param>
+            <returns></returns>
+        </member>
+        <member name="T:EDIX12Framework.EDIReadableFormatter`5">
+            <summary>
+                Base class for lightweight EDI reformatter which prints segmetns on individual lines, with
+                loop identification. Does *not* parse out individuals claims, etc.
+            </summary>
+            <typeparam name="TLoopDetector"></typeparam>
+            <typeparam name="TLevelMapper"></typeparam>
+            <typeparam name="TLoopTypeMap"></typeparam>
+            <typeparam name="TLoopType"></typeparam>
+            <typeparam name="TTransLevelEnum"></typeparam>
+        </member>
+        <member name="M:EDIX12Framework.EDIReadableFormatter`5.ReformatAsPlainText(System.IO.TextReader,System.IO.TextWriter)">
+            <summary>
+                Outputs as EDI info as  fixed-width columns spearated by spaces.
+                Defaults to hiding redundant loop/level info on segments in same group (after first) for clarity.
+                Caller is responsible for closing/disposing reader/writer and handling any desired text encoding
+            </summary>
+        </member>
+        <member name="M:EDIX12Framework.EDIReadableFormatter`5.ReformatAsPlainText(System.IO.TextReader,System.IO.TextWriter,System.Boolean)">
+            <summary>
+                Outputs as EDI info as fixed-width columns separated by spaces.
+                Param onlyShow... is used to hide redundant loop/level info on segments in same group (after first) for clarity.
+                Caller is responsible for closing/disposing reader/writer and handling any desired text encoding
+            </summary>
+        </member>
+        <member name="M:EDIX12Framework.EDIReadableFormatter`5.Reformat(System.IO.TextReader,System.IO.TextWriter,System.Boolean,EDIX12Framework.EDISegmentInfoTextFormat)">
+            <summary>
+                Outputs as fixed-width columns.
+                Set param onlyShow... to True to hide redundant loop/level info on segments in same group (after first) for
+                clarity.
+                Caller is responsible for closing/disposing reader/writer and handling any desired text encoding
+            </summary>
+        </member>
+        <member name="T:EDIX12Framework.EnvelopeTreeNode`4">
+            <summary>
+                Derived class for nodes corresponding to envelope header levels, with on-the-fly for
+                trailer reconstruction upon tree traversal (for emitting the ordered loops for batch EDI).
+            </summary>
+            <typeparam name="TLoopFamily"></typeparam>
+            <typeparam name="TLevelMapper"></typeparam>
+            <typeparam name="TLoopLevelEnum"></typeparam>
+            <typeparam name="TLoopTypeEnum"></typeparam>
+        </member>
+        <member name="P:EDIX12Framework.EnvelopeTreeNode`4.TrailerLoop">
+            <summary>
+                Dynamically constructs and returns a correct trailer segment as virtual loop.
+            </summary>
+        </member>
+        <member name="M:EDIX12Framework.EnvelopeTreeNode`4.Cleanup">
+            <summary>
+                Default behavior does nothing -- implement specific behavior in concrete subclasses if needed.
+                Should be called as need by GetLoops() or ToXML() implementations.
+            </summary>
+        </member>
+        <member name="T:EDIX12Framework.FlattenedItemKey`1">
+            <summary>
+                NOT FINISHED - attempt at flattened access by a constructed key
+            </summary>
+            <typeparam name="TLoopTypeEnum"></typeparam>
+        </member>
+        <member name="T:EDIX12Framework.ForwardValidatingStateMachine`1">
+            <summary>
+                Looks 'forward' to see if new state is a valid transition from current state.
+                Throws exception on invalid transition.
+            </summary>
+            <typeparam name="TState">State variable type. An enum is optimal.</typeparam>
+        </member>
+        <member name="F:EDIX12Framework.ForwardValidatingStateMachine`1.AllowedStatesFrom">
+            <summary>
+                Key is current state, value is HashSet of allowed 'next' states (or forward-looking transition check).
+                Constructor of derived concrete class should construct and populate this transition table.
+            </summary>
+        </member>
+        <member name="T:EDIX12Framework.GroupEnvelopeTreeNode`5">
+            <summary>
+                Node type containing an GS-GE functional group.  Knows how to construct GE trailer correctly for final
+                number of contained transactions.
+            </summary>
+        </member>
+        <member name="T:EDIX12Framework.ILevelNodeAggregator`1">
+            <summary>
+                Supplies optional, customizable aggrgating behavior upon merge of item into batch(updates header QTYs, AMTs, etc)
+                See ImportExport5010_277CA library for a sample implementation.
+            </summary>
+            <typeparam name="TLevelNode"></typeparam>
+        </member>
+        <member name="M:EDIX12Framework.ILevelNodeAggregator`1.Aggregate(`0,`0)">
+            <summary>
+                Second param level nodes data gets counts, sum, etc updated from the item being merged into batch tree, as defined
+                in concrete implementation of this interface..
+            </summary>
+            <param name="fromItemLevelNode"></param>
+            <param name="intoBatchLevelNode"></param>
+        </member>
+        <member name="T:EDIX12Framework.ILoopDetector`1">
+            <summary>
+                Returns a non-null loop type enum value when the passed-in segment is
+                a loop trigger (in current context).
+                Incorporates an internal state machine for loop identification.
+            </summary>
+            <typeparam name="TLoopTypeEnum"></typeparam>
+        </member>
+        <member name="M:EDIX12Framework.ILoopDetector`1.CheckForNextLoop(System.String,EDIX12Core.EDI_Delimiters)">
+            <summary>
+                Segment is the original 'raw' EDI string.
+            </summary>
+            <param name="segment"></param>
+            <param name="delimiters"></param>
+            <returns></returns>
+        </member>
+        <member name="M:EDIX12Framework.ILoopDetector`1.CheckForNextLoop(System.String[])">
+            <summary>
+                Segment is already parsed in to an array of the name/id (in position 0) plus the actual elements.
+                Returns null if segment did not start a new loop, otherwise the enum value.
+            </summary>
+            <param name="segment"></param>
+            <returns></returns>
+        </member>
+        <member name="T:EDIX12Framework.ILoopTypeNamer`1">
+            <summary>
+                Plug-in for mapping user's LoopType Enum to the 'plain' loop name as req'd in 997 and other contexts.
+                Example: ProfLoopType.Loop2010AA --> "2010AA"
+                Class SimpleLoopTypeNamer is one implementation.
+            </summary>
+            <typeparam name="TLoopTypeEnum"></typeparam>
+        </member>
+        <member name="T:EDIX12Framework.IntchgEnvelopeTreeNode`5">
+            <summary>
+                Node type containing an ISA-IEA interchange.  Knows how to construct IEA trailer correctly for final
+                number of contained functional groups.
+            </summary>
+        </member>
+        <member name="P:EDIX12Framework.IntchgEnvelopeTreeNode`5.TrailerLoop">
+            <summary>
+                Dynamically constructs a correct IEA interchange trailer.
+            </summary>
+        </member>
+        <member name="T:EDIX12Framework.IParsingLoopFactory`2">
+            <summary>
+                Interface to 'plugin' a loop factory to the generic loop reading /building code.
+                One method returns a loop object, other also loads it with supplied data.
+            </summary>
+            <typeparam name="TLoopFamily"></typeparam>
+            <typeparam name="TLoopTypeEnum"></typeparam>
+        </member>
+        <member name="P:EDIX12Framework.IParsingLoopFactory`2.LoopParsingBehavior">
+            <summary>
+                Default global handling for unexpected or nonstandard segments within loops.
+            </summary>
+        </member>
+        <member name="P:EDIX12Framework.IParsingLoopFactory`2.CustomLoopParsingBehavior">
+            <summary>
+                Allows defining exceptions to the global LoopParsingBehavior value on per loop basis where needed.
+            </summary>
+        </member>
+        <member name="M:EDIX12Framework.IParsingLoopFactory`2.CreateLoop(`1,System.Collections.Generic.IEnumerable{System.String},EDIX12Core.EDI_Delimiters,EDIX12Core.EDIControlInfo)">
+            <summary>
+                Uses the enum param to determine which specific loop subtype to instantiate, and supply
+                data for parsing into it.
+                If EDIControlInfo status param is null, loop parser will not track source.
+            </summary>
+            <param name="loopType"></param>
+            <returns></returns>
+        </member>
+        <member name="T:EDIX12Framework.ITransactionProcessorFactory">
+            <summary>
+                NOT USED YET
+            </summary>
+        </member>
+        <member name="T:EDIX12Framework.ITransItemCompletionChecker`3">
+            <summary>
+                Interface for a domain-specific 'helper' implementation object that will be supplied to the generic
+                LoopedTransItemBuilder
+                upon its construction.
+            </summary>
+        </member>
+        <member name="M:EDIX12Framework.ITransItemCompletionChecker`3.CheckLoopTransition(`1)">
+            <summary>
+                Provides status of transition to new loop for proper handling by builder/accumulator
+                in context of identifying start of next item(claim?) in hierarchical transaction, as well as proper
+                handling of EDI envelopes.
+                Note: WILL throw Exceptions on invalid loop structure.
+            </summary>
+        </member>
+        <member name="M:EDIX12Framework.ITransItemCompletionChecker`3.PrepLoopStackForNextItem(System.Collections.Generic.Stack{`1},`1)">
+            <summary>
+                Removes loops *not* being reused in next claim (transaction item).
+            </summary>
+        </member>
+        <member name="M:EDIX12Framework.ITransItemCompletionChecker`3.CreateTransactionItemFrom(System.Collections.Generic.IEnumerable{`1})">
+            <summary>
+                Factory method supplied since Transaction Item constructor overloaded with params is not visible to Generics.
+            </summary>
+        </member>
+        <member name="T:EDIX12Framework.ITransItemFactory`3">
+            <summary>
+                Use to encapsulate creation of your type of transaction item.
+            </summary>
+            <typeparam name="TTransItem"></typeparam>
+            <typeparam name="TLoopFamily"></typeparam>
+            <typeparam name="TLoopTypeEnum"></typeparam>
+        </member>
+        <member name="M:EDIX12Framework.ITransItemLoopProcessor`2.Start">
+            <summary>
+                Hook for running any pre-processing initialization code.
+            </summary>
+        </member>
+        <member name="M:EDIX12Framework.ITransItemLoopProcessor`2.ProcessLoops(System.Collections.Generic.IEnumerable{`0})">
+            <summary>
+                Visit the loops and process
+            </summary>
+        </member>
+        <member name="M:EDIX12Framework.ITransItemLoopProcessor`2.Finish">
+            <summary>
+                Hook for any post-processing 'wrapup' final code.
+            </summary>
+        </member>
+        <member name="T:EDIX12Framework.IValidatingStateMachine`1">
+            <summary>
+                Allows concrete backward- and forward-validating state machines to be used
+                interchangeably in generics.
+            </summary>
+            <typeparam name="TState"></typeparam>
+        </member>
+        <member name="T:EDIX12Framework.LoopBuilder`4">
+            <summary>
+                Accumulates the segments for a loop (as identified by supplied transaction-specific components)
+                and uses supplied factory to construct the loop object.
+            </summary>
+            <typeparam name="TLoopDetector"></typeparam>
+            <typeparam name="TLoopFactory"></typeparam>
+            <typeparam name="TLoopFamily"></typeparam>
+            <typeparam name="TLoopTypeEnum"></typeparam>
+        </member>
+        <member name="F:EDIX12Framework.LoopBuilder`4.transactSegmentPos">
+            <summary>
+                Segment position in transaction, counted from ST-SE inclusive
+            </summary>
+        </member>
+        <member name="M:EDIX12Framework.LoopBuilder`4.Accumulate(System.String,EDIX12Core.EDI_Delimiters,EDIX12Core.EDIControlInfo)">
+            <summary>
+                If param for EDIControlInfo is null, status will not be tracked when loop is built.
+                Returns null while still on segments within a loop.  Only returns a loop once start of next loop
+                has been detected.
+            </summary>
+        </member>
+        <member name="T:EDIX12Framework.LoopDef`2">
+            <summary>
+                Defines usage of a Loop within the larger EDI transaction
+                and its internal Segment structure.
+            </summary>
+        </member>
+        <member name="M:EDIX12Framework.LoopDef`2.#ctor(`0,`1,System.Boolean,`0,`0[],EDIX12Framework.LpSegmentDef[])">
+            <summary>
+                CONSTRUCTOR: Creates a loop entry that has a 'parent' dependency. 'Required' means
+                this loop is required, but only in the context of its *parent* existing.
+            </summary>
+        </member>
+        <member name="P:EDIX12Framework.LoopDef`2.Segments">
+            <summary>
+                Expected Segments for this Loop.
+            </summary>
+        </member>
+        <member name="T:EDIX12Framework.LoopedTransactionItem`2">
+            <summary>
+                Base class for specific 'claim', 'request', 'reply', 'notification', 'acknowledgment', etc classes.
+                Any business 'unit' contained in an ST-SE 'transaction' envelope.
+                Simply an ordered collection of it's loops as their base type.
+            </summary>
+        </member>
+        <member name="M:EDIX12Framework.LoopedTransactionItem`2.#ctor(System.Collections.Generic.IEnumerable{`0})">
+            <summary>
+                Create with an immutable collection of loops (loops themselves are not immutable).
+                May need to use some wrapper object/method as a factory in context of use in a generic.
+            </summary>
+            <param name="entityLoops"></param>
+        </member>
+        <member name="P:EDIX12Framework.LoopedTransactionItem`2.HasUnexpectedSegmnents">
+            <summary>
+                True if any loops contain unexpected/invalid segment types.
+            </summary>
+        </member>
+        <member name="P:EDIX12Framework.LoopedTransactionItem`2.UsageISA15">
+            <summary>
+                Exposed here as a convenience.
+            </summary>
+        </member>
+        <member name="M:EDIX12Framework.LoopedTransactionItem`2.ToString">
+            <summary>
+                Defaults to using * : ~ as element separator, subelem separator, terminator,
+                rather than using whatever was originally in the ISA header.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:EDIX12Framework.LoopedTransactionItem`2.DeepCopyLoops">
+            <summary>
+                Used by MakeDeepCopy() implemented in concrete Item classes.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:EDIX12Framework.LoopedTransItemBuilder`4">
+            <summary>
+                Accumulates segments, loops until claim,remit etc is complete, working with supplied trnsaction-specific
+                component types.
+            </summary>
+            <typeparam name="TNewItemChecker"></typeparam>
+            <typeparam name="TLoopedTransactItem"></typeparam>
+            <typeparam name="TLoopFamily"></typeparam>
+            <typeparam name="TLoopTypeEnum"></typeparam>
+        </member>
+        <member name="F:EDIX12Framework.LoopedTransItemBuilder`4.grpControlNum">
+            <summary>
+                For internal tracking for building keys for TransactionSummary
+            </summary>
+        </member>
+        <member name="F:EDIX12Framework.LoopedTransItemBuilder`4.transControlNum">
+            <summary>
+                For internal tracking for building keys for TransactionSummary
+            </summary>
+        </member>
+        <member name="F:EDIX12Framework.LoopedTransItemBuilder`4.key">
+            <summary>
+                For internal tracking for building keys for TransactionSummary
+            </summary>
+        </member>
+        <member name="M:EDIX12Framework.LoopedTransItemBuilder`4.#ctor">
+            <summary>
+                Construct instance of Generic LoopedTransItemBuilder with instances of domain-specific types from
+                supplied type parameters.
+            </summary>
+        </member>
+        <member name="P:EDIX12Framework.LoopedTransItemBuilder`4.DeepCopyLoopsForNewItem">
+            <summary>
+                True by default -- this preserves integrity of the internal stack which stores
+                higher level loops for reuse from item to item. Turning off may improve performance somewhat but
+                is only safe where the returned item will only be used in read-only scenario.
+            </summary>
+        </member>
+        <member name="P:EDIX12Framework.LoopedTransItemBuilder`4.TransactionSummaryLoops">
+            <summary>
+                Will be null if none exist (or are defined) for current transaction.
+            </summary>
+        </member>
+        <member name="M:EDIX12Framework.LoopedTransItemBuilder`4.Accumulate(`2)">
+            <summary>
+                Returns null for each loop stored, until a completed item has been assembled internally, then returns
+                that object.  Higher level loops that get 'reused' due to packed hierarchical nature of transaction are
+                saved internally for head start on next item.
+                WARNING: This same instance MUST be used for the entire interchange/transaction to preserve internal state.
+            </summary>
+        </member>
+        <member name="T:EDIX12Framework.LoopLevelTree`4">
+            <summary>
+                Generic base class for in-memory tree used by BatchBuilder.
+            </summary>
+            <typeparam name="TLoopFamily"></typeparam>
+            <typeparam name="TLoopTypeEnum"></typeparam>
+            <typeparam name="TLevelMapper"></typeparam>
+            <typeparam name="TLoopLevelEnum"></typeparam>
+        </member>
+        <member name="M:EDIX12Framework.LoopLevelTree`4.GetLoops">
+            <summary>
+                Returns loops for entire tree in proper order for enumeration to generate order EDI for the batch.
+                Warning - do NOT use .ToArray() on this as memory footprint may spike. Instead, walk the result with for...each.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:EDIX12Framework.LoopLevelTree`4.WriteTo(System.IO.TextWriter)">
+            <summary>
+                Supplied textwriter is a StreamWriter(with any text encoding) or StringWriter.
+                Caller is always responsible for closing the text/streamwriter.
+                Uses standard default delimiters of '*' ':' '^' and '~' terminator.
+            </summary>
+            <param name="textWriter"></param>
+        </member>
+        <member name="M:EDIX12Framework.LoopLevelTree`4.WriteTo(EDIX12Core.EDI_Delimiters,System.IO.TextWriter)">
+            <summary>
+                Supplied textwriter is a StreamWriter(with any text encoding) or StringWriter.
+                Caller is always responsible for closing the text/streamwriter.
+            </summary>
+        </member>
+        <member name="M:EDIX12Framework.LoopLevelTree`4.WriteTo(EDIX12Core.EDI_Delimiters,System.Boolean,System.IO.TextWriter)">
+            <summary>
+                Supplied textwriter is a StreamWriter(with any text encoding) or StringWriter.
+                Caller is always responsible for closing the text/streamwriter.
+            </summary>
+        </member>
+        <member name="M:EDIX12Framework.LoopLevelTree`4.InsertTransactionSummaries``1(EDIX12Framework.BatchBuilderTransactionSummaryMap{`0,`1})">
+            <summary>
+                Currently only known use is for 835 PLB segment virtual loops.
+            </summary>
+            <param name="transactSummaries"></param>
+        </member>
+        <member name="T:EDIX12Framework.LoopLevelTreeNode`4">
+            <summary>
+                Regular node in batch tree containing the loops within a level.
+            </summary>
+            <typeparam name="TLoopFamily"></typeparam>
+            <typeparam name="TLevelMapper"></typeparam>
+            <typeparam name="TLoopLevelEnum"></typeparam>
+            <typeparam name="TLoopTypeEnum"></typeparam>
+        </member>
+        <member name="M:EDIX12Framework.LoopLevelTreeNode`4.Equals(EDIX12Framework.LoopLevelTreeNode{`0,`1,`2,`3})">
+            <summary>
+                Compares tree level nodes without checking their child nodes.
+            </summary>
+            <param name="other"></param>
+            <returns></returns>
+        </member>
+        <member name="M:EDIX12Framework.LoopLevelTreeNode`4.Equals(System.Object)">
+            <summary>
+                Determines if loops at same level are identical. Ignores any child levels for this purpose of looking for merge
+                opportunities.
+            </summary>
+            <param name="obj"></param>
+            <returns></returns>
+        </member>
+        <member name="T:EDIX12Framework.LoopSegmentModel`3">
+            <summary>
+                Base class for defining acceptable transaction-specific loop-segment order for 997/999 syntax validators.
+            </summary>
+            <typeparam name="TSpecialLoopTypes"></typeparam>
+            <typeparam name="TLoopTypeEnum"></typeparam>
+            <typeparam name="TTransLevelEnum"></typeparam>
+        </member>
+        <member name="F:EDIX12Framework.LoopSegmentModel`3.loopDictionary">
+            <summary>
+                Data structure containing info on loop usage within an EDI transaction.
+                Loop definitions can be accessed using loop type as a key.  The loops can also
+                be iterated over from top down (added in that order upon construction).
+            </summary>
+        </member>
+        <member name="P:EDIX12Framework.LoopSegmentModel`3.TopDownLoopOrder">
+            <summary>
+                Exposed for walking the loop model in guaranteed order.
+            </summary>
+        </member>
+        <member name="P:EDIX12Framework.LoopSegmentModel`3.LoopTriggerSegmentIDs">
+            <summary>
+                Array containing the Segment IDs for 'trigger segments' starting loops in type of transaction:
+                'NM1', 'HL' etc.  Only distinct values (does not look at qualifiers). Includes ST but not SE.
+            </summary>
+        </member>
+        <member name="M:EDIX12Framework.LoopSegmentModel`3.GetAllReqdChildLoops(`1)">
+            <summary>
+                Gets required children, including the first segment, the 'trigger' that marked start of loop
+            </summary>
+        </member>
+        <member name="T:EDIX12Framework.LoopXMLNestingStyle">
+            <summary>
+                Specify XML formatting of loops/segments.
+            </summary>
+        </member>
+        <member name="F:EDIX12Framework.LoopXMLNestingStyle.WrapWithLoopName">
+            <summary>
+                Loop segments are wrapped with an element containing the loop name, ex. '2310A' (default).
+            </summary>
+        </member>
+        <member name="F:EDIX12Framework.LoopXMLNestingStyle.WrapWithTriggerSegment">
+            <summary>
+                Loop segments are wrapped with an element containing the loop's 'trigger' segment, ex 'NM1*71'.
+                (as in legacy apps in Vertical)
+            </summary>
+        </member>
+        <member name="T:EDIX12Framework.LpSegmentDef">
+            <summary>
+                Defines usage of a Segment type (by ID only) within a Loop.
+                Currently does *not* distinguish between segments at the qualifier level.
+            </summary>
+        </member>
+        <member name="M:EDIX12Framework.LpSegmentDef.#ctor(System.String)">
+            <summary>
+                Constructor for most common Segments that aren't required, and *don't* repeat,
+                within the current loop.
+            </summary>
+        </member>
+        <member name="M:EDIX12Framework.LpSegmentDef.#ctor(System.String,System.Boolean)">
+            <summary>
+                Constructor for Segments which may be required (and do NOT repeat within the current loop).
+            </summary>
+        </member>
+        <member name="M:EDIX12Framework.LpSegmentDef.#ctor(System.String,System.Boolean,System.Boolean)">
+            <summary>
+                Full constructor for Segments which may be required and/or allow for repeats within the loop.
+            </summary>
+        </member>
+        <member name="M:EDIX12Framework.LpSegmentDef.#ctor(System.String,System.Boolean,System.Boolean,System.Int32,System.String[])">
+            <summary>
+                Full constructor for Segments which may be required and/or allow for repeats within the loop.
+            </summary>
+        </member>
+        <member name="P:EDIX12Framework.LpSegmentDef.SegID">
+            <summary>
+                Segment ID such as NM1 or DTP.
+            </summary>
+        </member>
+        <member name="P:EDIX12Framework.LpSegmentDef.RequiredByLoop">
+            <summary>
+                Is segment required when containing loop exists?
+            </summary>
+        </member>
+        <member name="P:EDIX12Framework.LpSegmentDef.MayRepeat">
+            <summary>
+                Is more than one of this type segment legal in current loop?
+                Allows blocking duplicate N3s for example, but does not
+                provide for checks on exceeding counts higher than 1.
+            </summary>
+        </member>
+        <member name="P:EDIX12Framework.LpSegmentDef.QualifierPosition">
+            <summary>
+                For future development of possible stricter model definition.
+            </summary>
+        </member>
+        <member name="P:EDIX12Framework.LpSegmentDef.QualifiersAllowed">
+            <summary>
+                For future development of possible stricter model definition (REF01 checks, DTP01, AMT01 etc)
+                Caution, this may be null if not set in a concrete LoopSegmentModel.
+            </summary>
+        </member>
+        <member name="P:EDIX12Framework.LpSegmentDef.UsesIDQualifier">
+            <summary>
+                For future development of possible stricter model definition.
+                Will default to false if fields QualifierPosition and QualifiersAllowed are not used.
+            </summary>
+        </member>
+        <member name="M:EDIX12Framework.LpTriggerSegmentDef.#ctor(System.String)">
+            <summary>
+                For Loop TriggerSegments that do *not* require check of some qualifier to identify the loop, such as CLM seg in
+                837.
+            </summary>
+        </member>
+        <member name="M:EDIX12Framework.LpTriggerSegmentDef.#ctor(System.String,System.String)">
+            <summary>
+                Assumes qualifier for trigger segment is in 1st position, ex: NM101
+            </summary>
+        </member>
+        <member name="M:EDIX12Framework.LpTriggerSegmentDef.#ctor(System.String,System.String,System.Int32)">
+            <summary>
+                Use this overload if trigger segment has a qualifier that must be used to help properly identify the loop, such as
+                NM1 segments, but
+                in an arbitrary position.
+            </summary>
+        </member>
+        <member name="M:EDIX12Framework.LpTriggerSegmentDef.#ctor(System.String,System.Collections.Generic.IEnumerable{System.String},System.Int32)">
+            <summary>
+                Use this overload if trigger segment has a qualifier (from a set) that must be used to help properly identify the
+                loop, such as NM1 segments, but
+                in an arbitrary position.
+            </summary>
+        </member>
+        <member name="T:EDIX12Framework.NamespaceDoc">
+            <summary>
+                The <see cref="N:EDIX12Framework" /> namespace contains classes for the higher level components of EDI
+                consuming/constructing applications.
+            </summary>
+        </member>
+        <member name="T:EDIX12Framework.SimpleLoopTypeNamer`1">
+            <summary>
+                Generates upper case name of loop from a value in a LoopType enum by removing
+                the prefix text "Loop" if present.
+            </summary>
+            <typeparam name="TLoopTypeEnum"></typeparam>
+        </member>
+        <member name="T:EDIX12Framework.StrictBatchItemReader`6">
+            <summary>
+                Lighter weight fast reader for EDI interchange containing a batch or single item  -- assumes very strict
+                conformance with loop/segment order.
+                Reads segments into an internal queue in blocks of 1000. Similar to a recursive descent parser w/o the actual
+                recursive calls.
+                Use TransactionItemReader if a more robust/flexible solution is needed.
+            </summary>
+        </member>
+        <member name="P:EDIX12Framework.StrictBatchItemReader`6.OriginalDelimiters">
+            <summary>
+                After the first item has been read from transaction, thsi contains the set of of delimiters
+                defined in original ISA interchange header.
+            </summary>
+        </member>
+        <member name="P:EDIX12Framework.StrictBatchItemReader`6.AllowMultipleInterchangesInFile">
+            <summary>
+                Default is false (will throw exception on encountering second ISA-IEA).
+            </summary>
+        </member>
+        <member name="P:EDIX12Framework.StrictBatchItemReader`6.SegmentReadCount">
+            <summary>
+                Number of segment read so far from the parsing queue.
+            </summary>
+        </member>
+        <member name="P:EDIX12Framework.StrictBatchItemReader`6.MoreSegmentsToParse">
+            <summary>
+                For concrete implementation to check for more data in case of multiple interchanges.
+            </summary>
+        </member>
+        <member name="M:EDIX12Framework.StrictBatchItemReader`6.TransactionItems(System.IO.TextReader)">
+            <summary>
+                Since a batch may be quite large, enumerate over this method directly, as in
+                foreach(var item in reader.TransactionItems()...
+                This avoids the overhead of reading all into memory at once in a giant collection.
+            </summary>
+            <param name="txtReader"></param>
+            <returns></returns>
+        </member>
+        <member name="M:EDIX12Framework.StrictBatchItemReader`6.ReadItem">
+            <summary>
+                Define behavior in your concrete implementation to consume segments form the segment queue in order to build the
+                loops.
+            </summary>
+        </member>
+        <member name="M:EDIX12Framework.StrictBatchItemReader`6.CompleteItem">
+            <summary>
+                Builds a strongly typed item (claim, etc) from loops, and does cleanup as needed on
+                HL segment linking and reconstruction of any trailer segments (SE, GE, IEA) for counts.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:EDIX12Framework.StrictBatchItemReader`6.GotLoopTrigger(System.String)">
+            <summary>
+                For identifying/reading loop trigger segments like CLM that need no additional qualifier.
+            </summary>
+        </member>
+        <member name="M:EDIX12Framework.StrictBatchItemReader`6.GotLoopTrigger(System.String,System.String)">
+            <summary>
+                For identifying/reading loop trigger segments like NM1 with qualifier in position 1 (NM1*71*...~).
+            </summary>
+        </member>
+        <member name="M:EDIX12Framework.StrictBatchItemReader`6.GotLoopTrigger(System.String,System.String[])">
+            <summary>
+                For identifying/reading loop trigger segments like NM1 with qualifier in position 1 (NM1*71*...~)
+                where multiple qualifiers could indicate the *same* loop type (like in the 270/271).
+            </summary>
+        </member>
+        <member name="M:EDIX12Framework.StrictBatchItemReader`6.GotLoopTrigger(System.String,System.String,System.Int32)">
+            <summary>
+                For identifying/reading loop trigger segments with qualifier in any position, like HL's qualifier at HL03
+                (HL*1**20~).
+            </summary>
+        </member>
+        <member name="M:EDIX12Framework.StrictBatchItemReader`6.DiscardSegmentIfFound(System.String)">
+            <summary>
+                Used to discard envelope trailer segments since they are not always present, but are always reconstructed for the
+                extracted item.
+            </summary>
+            <param name="segmentID"></param>
+            <returns></returns>
+        </member>
+        <member name="M:EDIX12Framework.StrictBatchItemReader`6.GetOne(System.String)">
+            <summary>
+                For non-repeating segments in a loop -- but NOT for use on the trigger segment.
+            </summary>
+        </member>
+        <member name="M:EDIX12Framework.StrictBatchItemReader`6.GetRepeats(System.String)">
+            <summary>
+                For possibly repeating segments in a loop -- never on trigger segment
+            </summary>
+        </member>
+        <member name="M:EDIX12Framework.StrictBatchItemReader`6.GetMaxRepeats(System.String,System.Int32,`5)">
+            <summary>
+                For possibly repeating segments in a loop with a max upper limit -- never on trigger segment
+                Will throw exception if limit exceeded!
+            </summary>
+        </member>
+        <member name="M:EDIX12Framework.StrictBatchItemReader`6.AssembleLoop(`5)">
+            <summary>
+                Construct loop object of designated type from the already collected segments.
+            </summary>
+            <param name="loopType"></param>
+        </member>
+        <member name="M:EDIX12Framework.StrictBatchItemReader`6.PurgeLoopsFromPreviousItemIfNeeded(`5)">
+            <summary>
+                If EDI moves 'up' to a higher level (indicating start of a new item), the lower levels loops are discarded, keeping
+                only the
+                higher level shared loops for reuse.
+            </summary>
+            <param name="thisHigherLevelLoop"></param>
+        </member>
+        <member name="T:EDIX12Framework.StrictSingleItemReader`5">
+            <summary>
+                Lighter weight fast reader for EDI interchange KNOWN to contain only a single item  -- assumes very strict
+                conformance with loop/segment order.
+                Somewhat simpler than the StrictBatchReader.
+            </summary>
+        </member>
+        <member name="P:EDIX12Framework.StrictSingleItemReader`5.OriginalDelimiters">
+            <summary>
+                After the first item has been read from transaction, thsi contains the set of of delimiters
+                defined in original ISA interchange header.
+            </summary>
+        </member>
+        <member name="P:EDIX12Framework.StrictSingleItemReader`5.SegmentReadCount">
+            <summary>
+                Number of segment read so far from the parsing queue.
+            </summary>
+        </member>
+        <member name="M:EDIX12Framework.StrictSingleItemReader`5.ReadLoopsForItem">
+            <summary>
+                Define behavior in your concrete implementation to consume segments form the segment queue in order to build the
+                loops.
+            </summary>
+        </member>
+        <member name="M:EDIX12Framework.StrictSingleItemReader`5.GotTrigger(System.String)">
+            <summary>
+                For identifying/reading loop trigger segments like CLM that need no additional qualifier.
+            </summary>
+        </member>
+        <member name="M:EDIX12Framework.StrictSingleItemReader`5.GotTrigger(System.String,System.String)">
+            <summary>
+                For identifying/reading loop trigger segments like NM1 with qualifier in position 1 (NM1*71*...~).
+            </summary>
+        </member>
+        <member name="M:EDIX12Framework.StrictSingleItemReader`5.GotTrigger(System.String,System.String[])">
+            <summary>
+                For identifying/reading loop trigger segments like NM1 with qualifier in position 1 (NM1*71*...~)
+                where multiple qualifiers could indicate the *same* loop type (like in the 270/271).
+            </summary>
+        </member>
+        <member name="M:EDIX12Framework.StrictSingleItemReader`5.GotTrigger(System.String,System.String,System.Int32)">
+            <summary>
+                For identifying/reading loop trigger segments with qualifier in any position, like HL's qualifier at HL03
+                (HL*1**20~).
+            </summary>
+        </member>
+        <member name="M:EDIX12Framework.StrictSingleItemReader`5.GetOne(System.String)">
+            <summary>
+                For non-repeating segments in a loop -- but NOT for use on the trigger segment.
+            </summary>
+        </member>
+        <member name="M:EDIX12Framework.StrictSingleItemReader`5.GetRepeats(System.String)">
+            <summary>
+                For possibly repeating segments in a loop -- never on trigger segment
+            </summary>
+        </member>
+        <member name="M:EDIX12Framework.StrictSingleItemReader`5.GetMaxRepeats(System.String,System.Int32,`4)">
+            <summary>
+                For possibly repeating segments in a loop with a max upper limit -- never on trigger segment
+                Will throw exception if limit exceeded!
+            </summary>
+        </member>
+        <member name="T:EDIX12Framework.TransactEnvelopeTreeNode`5">
+            <summary>
+                Node type containing an ST-SE transaction.  Knows how to construct SE trailer correctly for final
+                number of contained segments.  Also correctly renumbers HL segments for final hierarchy.
+            </summary>
+            <typeparam name="TLoopFamily"></typeparam>
+            <typeparam name="TLevelMapper"></typeparam>
+            <typeparam name="TLoopLevelEnum"></typeparam>
+            <typeparam name="TLoopTypeEnum"></typeparam>
+            <typeparam name="TLoopEnumMap"></typeparam>
+        </member>
+        <member name="P:EDIX12Framework.TransactEnvelopeTreeNode`5.TransactionSummaryLoop">
+            <summary>
+                Hook for inserting virtual loop consisting of transactions summary segments (ex 835 PLBs)
+                Null for most EDI transactions.
+            </summary>
+        </member>
+        <member name="M:EDIX12Framework.TransactEnvelopeTreeNode`5.Cleanup">
+            <summary>
+                Renumber any HL segments for internal consistency
+            </summary>
+        </member>
+        <member name="T:EDIX12Framework.TransactionItemFlattener`3">
+            <summary>
+                EXPERIMENTAL
+            </summary>
+            <typeparam name="TTransItem"></typeparam>
+            <typeparam name="TLoopFamily"></typeparam>
+            <typeparam name="TLoopTypeEnum"></typeparam>
+        </member>
+        <member name="F:EDIX12Framework.TransactionItemFlattener`3.loopBlockCounters">
+            <summary>
+                Key one of the loop types defined as beginning a repeating block of loops.
+                Value is the current instance count (first instance of a block will be at 1)
+            </summary>
+        </member>
+        <member name="F:EDIX12Framework.TransactionItemFlattener`3.repeatingLoopBlockMap">
+            <summary>
+                Key is a given loop type, value is the type of loop that begins the block of which it is a member.
+                This *should* include the first loop also as a member of the block.
+            </summary>
+        </member>
+        <member name="T:EDIX12Framework.TransactionItemProcesor`4">
+            <summary>
+                Not used yet.
+            </summary>
+            <typeparam name="TTransItem"></typeparam>
+            <typeparam name="TLoopProcessor"></typeparam>
+            <typeparam name="TLoopFamily"></typeparam>
+            <typeparam name="TLoopTypeEnum"></typeparam>
+        </member>
+        <member name="T:EDIX12Framework.TransactionItemReader`7">
+            <summary>
+                Generic base class for parsing and extracting individual transaction items (claim, eligibility, etc)
+                from an EDI batch interchange. This is the more flexible, but more complex and somewhat slower
+                counterpart to the Strict readers.  More tolerant of data out-of-order within certain limits.
+            </summary>
+            <typeparam name="TNewItemChecker"></typeparam>
+            <typeparam name="TTransItem"></typeparam>
+            <typeparam name="TLoopDetector"></typeparam>
+            <typeparam name="TLoopFactory"></typeparam>
+            <typeparam name="TLoopFamily"></typeparam>
+            <typeparam name="TSpecialLoops"></typeparam>
+            <typeparam name="TLoopTypeEnum"></typeparam>
+        </member>
+        <member name="M:EDIX12Framework.TransactionItemReader`7.#ctor(System.IO.TextReader,EDIX12Core.UnexpectedSegmentHandling)">
+            <summary>
+                Constructor. Trailers segments will be reconstructed with corrected counts for the extracted items.
+                Original EDI source tracking is disabled by default.
+            </summary>
+            <param name="textReader">A StreamReader or StringReader.</param>
+            <param name="loopParsingBehavior">Determine how unexpected segments for a given loop are processed/ignored.</param>
+        </member>
+        <member name="M:EDIX12Framework.TransactionItemReader`7.#ctor(System.IO.TextReader,EDIX12Core.UnexpectedSegmentHandling,System.Boolean)">
+            <summary>
+                Constructor. Trailers segments will be reconstructed with corrected counts for the extracted items.
+            </summary>
+            <param name="textReader">A StreamReader or StringReader.</param>
+            <param name="loopParsingBehavior">Determine how unexpected segments for a given loop are processed/ignored.</param>
+            <param name="storeDataEDISources">
+                Set true so source of every segment and element is tracked from original EDI
+                transaction.
+            </param>
+        </member>
+        <member name="P:EDIX12Framework.TransactionItemReader`7.OriginalDelimiters">
+            <summary>
+                After the first item has been read from transaction, thsi contains the set of of delimiters
+                defined in original ISA interchange header.
+            </summary>
+        </member>
+        <member name="P:EDIX12Framework.TransactionItemReader`7.DeepCopyLoopsForNewItem">
+            <summary>
+                True by default -- this preserves integrity of the internal stack accumulator which stores
+                higher level loops for reuse from item to item. Turning off may improve performance somewhat but
+                is only safe where the returned item will only be used in read-only scenario.
+                DO NOT CHANGE VALUE AFTER READING HAS BEGUN!
+            </summary>
+        </member>
+        <member name="P:EDIX12Framework.TransactionItemReader`7.TransactionSummaries">
+            <summary>
+                Protected so must intentionally expose in concrete class (recommended only if that transaction type
+                defines summary loops).
+                Will be null if no summaries exist.  If exists, only transactions with summarys will have entries, so use
+                ContainsKey() or TryGetValue().
+                Key format is concatenated group and transaction control numbers with asterisk (*) delimiter, example:
+                "000123*23".
+            </summary>
+        </member>
+        <member name="M:EDIX12Framework.TransactionItemReader`7.ReadItem">
+            <summary>
+                Returns a single complete item from hierarchical transaction, or null when none are left on stream.
+                Any HL segments are renumbered consistently and SE,GE,IEA trailers reconstructed automatically.
+            </summary>
+        </member>
+        <member name="T:EDIX12Framework.TransactionItemUtils`6">
+            <summary>
+                SOme generic utility functions used by the Transaction Item Reader.
+            </summary>
+            <typeparam name="TTransItemFactory"></typeparam>
+            <typeparam name="TTransItem"></typeparam>
+            <typeparam name="TLoopFactory"></typeparam>
+            <typeparam name="TSpecialLoops"></typeparam>
+            <typeparam name="TLoopFamily"></typeparam>
+            <typeparam name="TLoopTypeEnum"></typeparam>
+        </member>
+        <member name="M:EDIX12Framework.TransactionItemUtils`6.MakeItemWithUpdatedTrailers(`1)">
+            <summary>
+                Helper method constructs and appends new consistent trailing loop/segments to end of item.
+                Assumes item already does NOT have trailers (SE, GE, IEA).
+            </summary>
+            <param name="item"></param>
+            <returns></returns>
+        </member>
+        <member name="M:EDIX12Framework.TransactionItemUtils`6.UpdateHLSegments(`1)">
+            <summary>
+                Ensures HL ids and parent references are all correct.
+                Original reordering was wrong!
+            </summary>
+            <param name="item"></param>
+        </member>
+        <member name="T:EDIX12Framework.TransactItemTreeBuilder`8">
+            <summary>
+                Used by batch builder, for transforming a single item (claim etc) into a simple tree, for merging into the batch's
+                tree.
+            </summary>
+            <typeparam name="TTransItem"></typeparam>
+            <typeparam name="TLoopFactory"></typeparam>
+            <typeparam name="TLoopFamily"></typeparam>
+            <typeparam name="TLoopEnumMap"></typeparam>
+            <typeparam name="TLoopStateMachine"></typeparam>
+            <typeparam name="TLevelMapper"></typeparam>
+            <typeparam name="TLoopTypeEnum"></typeparam>
+            <typeparam name="TLoopLevelEnum"></typeparam>
+        </member>
+        <member name="T:EDIX12Framework.TransitionItemStatus">
+            <summary>
+                Characterizes state of the latest loop transition, for use by LoopedTransItemBuilder. This value used to
+                determine when a claim,remit,etc has ended (and/or new one begun).
+            </summary>
+        </member>
+        <member name="F:EDIX12Framework.TransitionItemStatus.StartsNewItemInTransaction">
+            <summary>
+                Moved 'up' (ex. from charge level to new subscriber, biller, etc) within same transaction, so
+                current item/claim ends and next item begins.
+            </summary>
+        </member>
+        <member name="F:EDIX12Framework.TransitionItemStatus.InSameItem">
+            <summary>Loop still in same transaction item (claim, etc)</summary>
+        </member>
+        <member name="F:EDIX12Framework.TransitionItemStatus.ItemEndsWithTransaction">
+            <summary></summary>
+        </member>
+        <member name="F:EDIX12Framework.TransitionItemStatus.OutsideItem">
+            <summary></summary>
+        </member>
+        <member name="F:EDIX12Framework.TransitionItemStatus.StartsNewItemOutsideTransaction">
+            <summary></summary>
+        </member>
+        <member name="F:EDIX12Framework.TransitionItemStatus.NonItemTransSummary">
+            <summary>
+                For special, rare case of summary segments/loops at end of transaction which do not
+                actually belong to any single item.  Will be read thru on final item before SE, but accumulated separately.
+            </summary>
+        </member>
+        <member name="T:EDIX12Framework.UsageIndicator">
+            <summary>
+                Enum for ISA15 values.
+            </summary>
+        </member>
+        <member name="T:EDIX12Framework.Xml2EDIResult">
+            <summary>
+                Simple result 'carrier' type for edi and metadata returned by XmlSSItoEDI.ConvertToEdi()
+            </summary>
+        </member>
+        <member name="T:EDIX12Framework.XmlSSItoEDI`1">
+            <summary>
+                Generic base for converting SSI's proprietary nested XML format for X12 EDI (from old Vertical javascript apps)
+                back into actual EDI while extracting and presenting any embedded metadata.
+                Corrects certain known issues such as bad ISA09 date format, or bad/missing trailer segments (SE, GE, IEA).
+            </summary>
+        </member>
+        <member name="M:EDIX12Framework.XmlSSItoEDI`1.ConvertToEdi(System.String)">
+            <summary>
+                Result object contains the EDI string and a dictionary of any embedded metadata.
+            </summary>
+            <param name="xmlData"></param>
+            <returns></returns>
+        </member>
+        <member name="M:EDIX12Framework.XmlSSItoEDI`1.WalkSegmentNodes(System.Xml.Linq.XElement,System.Text.StringBuilder)">
+            <summary>
+                Recursively walks the nested tree of segment xelements, building EDI string as it goes.
+                Also collects metadata as encountered.
+            </summary>
+        </member>
+        <member name="M:EDIX12Framework.XmlSSItoEDI`1.AddToMetadata(System.String,System.String,System.String)">
+            <summary>
+                Adds custom attribute values to flattened dictionary, constructing key by concatenating xelement name and attribute
+                name.
+                Safe superset handling for duplicates. Key is forced all lowercase.
+            </summary>
+        </member>
+    </members>
+</doc>

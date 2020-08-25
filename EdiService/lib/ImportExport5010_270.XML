@@ -1,0 +1,708 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>ImportExport5010_270</name>
+    </assembly>
+    <members>
+        <member name="F:ImportExport5010_270.Advanced.EligLoopDetector.isDependent">
+            <summary>
+                Preserved state for determining context of EQ segments to ID the loop.
+            </summary>
+        </member>
+        <member name="M:ImportExport5010_270.Advanced.EligLoopStateMachine.#cctor">
+            <summary>
+                Will only create the state transition lookup (in base class) once for the life of the process.
+            </summary>
+        </member>
+        <member name="F:ImportExport5010_270.Advanced.Hierarch270Level.None">
+            <summary> Default on declaration, before entering 837. </summary>
+        </member>
+        <member name="F:ImportExport5010_270.Advanced.Hierarch270Level.IntchgHeader">
+            <summary>Interchange EDI header</summary>
+        </member>
+        <member name="F:ImportExport5010_270.Advanced.Hierarch270Level.GroupHeader">
+            <summary>Functional Group EDI header</summary>
+        </member>
+        <member name="F:ImportExport5010_270.Advanced.Hierarch270Level.TransHeader">
+            <summary>Transaction header </summary>
+        </member>
+        <member name="F:ImportExport5010_270.Advanced.Hierarch270Level.InfoSource">
+            <summary>Information Source</summary>
+        </member>
+        <member name="F:ImportExport5010_270.Advanced.Hierarch270Level.InfoReceiver">
+            <summary>InformationReceiver</summary>
+        </member>
+        <member name="F:ImportExport5010_270.Advanced.Hierarch270Level.Subscriber">
+            <summary>Subscriber</summary>
+        </member>
+        <member name="F:ImportExport5010_270.Advanced.Hierarch270Level.SubscrName">
+            <summary>Subscriber Name</summary>
+        </member>
+        <member name="F:ImportExport5010_270.Advanced.Hierarch270Level.SubscrInquiry">
+            <summary>Subscriber Eligibility Inquiry Info</summary>
+        </member>
+        <member name="F:ImportExport5010_270.Advanced.Hierarch270Level.Dependent">
+            <summary>Dependent -- only used where subscriber is not patient</summary>
+        </member>
+        <member name="F:ImportExport5010_270.Advanced.Hierarch270Level.DependName">
+            <summary>Dependent Name</summary>
+        </member>
+        <member name="F:ImportExport5010_270.Advanced.Hierarch270Level.DependInquiry">
+            <summary>Dependent Eligibility Inquiry Info</summary>
+        </member>
+        <member name="F:ImportExport5010_270.Advanced.Hierarch270Level.TransTrailer">
+            <summary> Eligibility Inquiry Info</summary>
+            <summary>Transaction EDI trailer</summary>
+        </member>
+        <member name="F:ImportExport5010_270.Advanced.Hierarch270Level.GroupTrailer">
+            <summary>Group EDI trailer</summary>
+        </member>
+        <member name="F:ImportExport5010_270.Advanced.Hierarch270Level.IntchgTrailer">
+            <summary>Interchange EDI trailer</summary>
+        </member>
+        <member name="T:ImportExport5010_270.Advanced.IEligLoopProcessor">
+            <summary>
+                Interface for double-dispatch visitor pattern.
+            </summary>
+        </member>
+        <member name="M:ImportExport5010_270.Advanced.IEligLoopProcessor.PostProcess">
+            <summary>
+                Should be called once for completion code, after all the enumerated loops have been passed to Process().
+            </summary>
+        </member>
+        <member name="F:ImportExport5010_270.Advanced.NewEligInquiryChecker.newInquiryLevelsInTransaction">
+            <summary>
+                These are the levels (inside a transaction) that a transition to indicates
+                start of a new logical eligibility inquiry.
+            </summary>
+        </member>
+        <member name="P:ImportExport5010_270.EligibilityInquiry.SendElectronic">
+            <summary>
+                Default is true (for 837 EDI source), may set false for programmatically constructed
+                claim.
+            </summary>
+        </member>
+        <member name="P:ImportExport5010_270.EligibilityInquiryAdapter.LpISA">
+            <summary>
+                Interchange header virtual loop.
+            </summary>
+        </member>
+        <member name="P:ImportExport5010_270.EligibilityInquiryAdapter.LpGS">
+            <summary>
+                Functional Group header virtual loop.
+            </summary>
+        </member>
+        <member name="P:ImportExport5010_270.EligibilityInquiryAdapter.LpST">
+            <summary>
+                Transaction header virtual loop.
+            </summary>
+        </member>
+        <member name="P:ImportExport5010_270.EligibilityInquiryAdapter.Lp2000A">
+            <summary>
+                Source Level
+            </summary>
+        </member>
+        <member name="P:ImportExport5010_270.EligibilityInquiryAdapter.Lp2100A">
+            <summary>
+                Source Name
+            </summary>
+        </member>
+        <member name="P:ImportExport5010_270.EligibilityInquiryAdapter.Lp2000B">
+            <summary>
+                Receiver Level
+            </summary>
+        </member>
+        <member name="P:ImportExport5010_270.EligibilityInquiryAdapter.Lp2100B">
+            <summary>
+                Receiver Name
+            </summary>
+        </member>
+        <member name="P:ImportExport5010_270.EligibilityInquiryAdapter.Lp2000C">
+            <summary>
+                Subscriber Level
+            </summary>
+        </member>
+        <member name="P:ImportExport5010_270.EligibilityInquiryAdapter.Lp2100C">
+            <summary>
+                Subscriber Name
+            </summary>
+        </member>
+        <member name="P:ImportExport5010_270.EligibilityInquiryAdapter.Lp2000D">
+            <summary>
+                Dependent Level
+            </summary>
+        </member>
+        <member name="P:ImportExport5010_270.EligibilityInquiryAdapter.Lp2100D">
+            <summary>
+                Dependent Name
+            </summary>
+        </member>
+        <member name="P:ImportExport5010_270.EligibilityInquiryAdapter.SubscriberInquiries">
+            <summary>
+                Each subscriber 'inquiry' item includes loop 2110C.
+            </summary>
+        </member>
+        <member name="P:ImportExport5010_270.EligibilityInquiryAdapter.DependentInquiries">
+            <summary>
+                Each dependent 'inquiry' item includes loop 2110D.
+            </summary>
+        </member>
+        <member name="P:ImportExport5010_270.EligibilityInquiryAdapter.LpSE">
+            <summary>
+                Transaction trailer virtual loop.
+            </summary>
+        </member>
+        <member name="P:ImportExport5010_270.EligibilityInquiryAdapter.LpGE">
+            <summary>
+                Functional Group trailer virtual loop.
+            </summary>
+        </member>
+        <member name="P:ImportExport5010_270.EligibilityInquiryAdapter.LpIEA">
+            <summary>
+                Interchange trailer virtual loop.
+            </summary>
+        </member>
+        <member name="T:ImportExport5010_270.EligibilityInquiryReader">
+            <summary>
+                New architecture 'reader' for 270 ELigibility Inquiry EDI (ver 5010)
+            </summary>
+        </member>
+        <member name="M:ImportExport5010_270.EligibilityInquiryReader.#ctor(System.IO.TextReader,EDIX12Core.UnexpectedSegmentHandling)">
+            <summary>
+                Param txtReader may be a StreamReader (on file, memory stream etc,with optional text encoding) or StringReader.
+                Caller is responsible for Disposing of textreader resources if an exception is thrown during use.
+                Trailer segments (as virtual loops) will be reconstructed
+            </summary>
+        </member>
+        <member name="M:ImportExport5010_270.Loops.EligInquiryLoop.ProcessWith(ImportExport5010_270.Advanced.IEligLoopProcessor)">
+            <summary>
+                For implementing part of the double-dispatch visitor pattern.
+            </summary>
+            <param name="processor"></param>
+        </member>
+        <member name="M:ImportExport5010_270.Loops.EligLoopFactory.CreateLoop(ImportExport5010_270.Loops.EligLoopType)">
+            <summary>
+                Creates instance of instituional loop per the supplied loop type
+            </summary>
+            <param name="loopType">Enum value from the 837I loop detector</param>
+            <returns>An instituional loop polymorphically as a base loop.</returns>
+        </member>
+        <member name="T:ImportExport5010_270.Loops.EligLoopType">
+            <summary>
+                Enumeration of 5010 270 EDI Loop Types for Eligibility inquiries.
+            </summary>
+        </member>
+        <member name="F:ImportExport5010_270.Loops.EligLoopType.None">
+            <summary> Dummy 'null' value for default.</summary>
+        </member>
+        <member name="F:ImportExport5010_270.Loops.EligLoopType.LoopIntchgHdr">
+            <summary>INTERCHANGE HEADER - optional virtual loop - for the ISA segment </summary>
+        </member>
+        <member name="F:ImportExport5010_270.Loops.EligLoopType.LoopGroupHdr">
+            <summary>FUNCTIONAL GROUP HEADER - optional virtual loop - for the GS segment </summary>
+        </member>
+        <member name="F:ImportExport5010_270.Loops.EligLoopType.LoopTransactHdr">
+            <summary>TRANSACTION HEADER - optional virtual loop - for ST-BHT-REF segments</summary>
+        </member>
+        <member name="F:ImportExport5010_270.Loops.EligLoopType.LoopIntchgTrlr">
+            <summary>INTERCHANGE TRAILER - optional virtual loop - for the IEA segment </summary>
+        </member>
+        <member name="F:ImportExport5010_270.Loops.EligLoopType.LoopGroupTrlr">
+            <summary>FUNCTIONAL GROUP TRAILER - optional virtual loop - for the GE segment </summary>
+        </member>
+        <member name="F:ImportExport5010_270.Loops.EligLoopType.LoopTransactTrlr">
+            <summary>TRANSACTION TRAILER - optional virtual loop - for SE segment</summary>
+        </member>
+        <member name="F:ImportExport5010_270.Loops.EligLoopType.Loop2000A">
+            <summary>INFO SOURCE LEVEL </summary>
+        </member>
+        <member name="F:ImportExport5010_270.Loops.EligLoopType.Loop2100A">
+            <summary>SOURCE NAME</summary>
+        </member>
+        <member name="F:ImportExport5010_270.Loops.EligLoopType.Loop2000B">
+            <summary>INFO RECEIVER LEVEL  </summary>
+        </member>
+        <member name="F:ImportExport5010_270.Loops.EligLoopType.Loop2100B">
+            <summary>RECEIVER NAME</summary>
+        </member>
+        <member name="F:ImportExport5010_270.Loops.EligLoopType.Loop2000C">
+            <summary>SUBSCRIBER LEVEL  </summary>
+        </member>
+        <member name="F:ImportExport5010_270.Loops.EligLoopType.Loop2100C">
+            <summary>SUBSCRIBER NAME  </summary>
+        </member>
+        <member name="F:ImportExport5010_270.Loops.EligLoopType.Loop2110C">
+            <summary>SUBSCRIBER INQUIRY INFO  </summary>
+        </member>
+        <member name="F:ImportExport5010_270.Loops.EligLoopType.Loop2000D">
+            <summary>DEPENDENT LEVEL  </summary>
+        </member>
+        <member name="F:ImportExport5010_270.Loops.EligLoopType.Loop2100D">
+            <summary>DEPENDENT NAME  </summary>
+        </member>
+        <member name="F:ImportExport5010_270.Loops.EligLoopType.Loop2110D">
+            <summary>DEPENDENT INQUIRY INFO  </summary>
+        </member>
+        <member name="F:ImportExport5010_270.Loops.EligLoopType.LoopError">
+            <summary>Cannot identify loop.</summary>
+        </member>
+        <member name="T:ImportExport5010_270.Loops.Loop2000A">
+            <summary>
+                Information Source Hierarchical Level
+            </summary>
+        </member>
+        <member name="F:ImportExport5010_270.Loops.Loop2000A.HL">
+            <summary> Info Source Hierarchical Level </summary>
+        </member>
+        <member name="T:ImportExport5010_270.Loops.Loop2000B">
+            <summary>
+                Info Receiver Hierarchical Level
+            </summary>
+        </member>
+        <member name="F:ImportExport5010_270.Loops.Loop2000B.HL">
+            <summary> Info Source Hierarchical Level </summary>
+        </member>
+        <member name="T:ImportExport5010_270.Loops.Loop2000C">
+            <summary>
+                Subscriber Level
+            </summary>
+        </member>
+        <member name="T:ImportExport5010_270.Loops.Loop2000D">
+            <summary>
+                Dependent Level
+            </summary>
+        </member>
+        <member name="T:ImportExport5010_270.Loops.Loop2100A">
+            <summary>
+                Information Source Name
+            </summary>
+        </member>
+        <member name="T:ImportExport5010_270.Loops.Loop2100B">
+            <summary>
+                Info Receiver Name
+            </summary>
+        </member>
+        <member name="T:ImportExport5010_270.Loops.Loop2100C">
+            <summary>
+                Subscriber Name
+            </summary>
+        </member>
+        <member name="T:ImportExport5010_270.Loops.Loop2100D">
+            <summary>
+                Dependent Name
+            </summary>
+        </member>
+        <member name="T:ImportExport5010_270.Loops.LoopGroupHeader">
+            <summary>
+                Virtual loop for holding 837 functional group header info (storing GS segment)
+            </summary>
+        </member>
+        <member name="T:ImportExport5010_270.Loops.LoopGroupTrailer">
+            <summary>
+                Virtual loop for holding 837 functional group trailer info (storing GE segment)
+            </summary>
+        </member>
+        <member name="T:ImportExport5010_270.Loops.LoopIntchgHeader">
+            <summary>
+                Virtual loop for holding 837 functional group header info (storing ISA segment)
+            </summary>
+        </member>
+        <member name="T:ImportExport5010_270.Loops.LoopIntchgTrailer">
+            <summary>
+                Virtual loop for holding 837 interchange trailer info (storing IEA segment)
+            </summary>
+        </member>
+        <member name="T:ImportExport5010_270.Loops.LoopTransHeader">
+            <summary>
+                Virtual loop for holding 837 transaction header info (starting with ST segment)
+            </summary>
+        </member>
+        <member name="T:ImportExport5010_270.Loops.LoopTransTrailer">
+            <summary>
+                Virtual loop for holding 837 transaction set trailer info (storing SE segment)
+            </summary>
+        </member>
+        <member name="T:ImportExport5010_270.Loops.SegmentAMT">
+            <summary>
+                270 segment: Monetary Amount
+            </summary>
+        </member>
+        <member name="T:ImportExport5010_270.Loops.SegmentBHT">
+            <summary>
+                270 segment: Beginning of Hierarchical Transaction
+            </summary>
+        </member>
+        <member name="T:ImportExport5010_270.Loops.SegmentDMG">
+            <summary>
+                270 segment: Demographic Info
+            </summary>
+        </member>
+        <member name="F:ImportExport5010_270.Loops.SegmentDMG.DMG02_DatTimPeriod">
+            <summary>
+                Birth date
+            </summary>
+        </member>
+        <member name="F:ImportExport5010_270.Loops.SegmentDMG.DMG03_GenderCode">
+            <summary>
+                Sex
+            </summary>
+        </member>
+        <member name="T:ImportExport5010_270.Loops.SegmentDTP">
+            <summary>
+                270 segment: Date Time Period
+            </summary>
+        </member>
+        <member name="F:ImportExport5010_270.Loops.SegmentDTP.DTP01_DateTimeQual">
+            <summary>
+                Code indicates what event the date describes.
+            </summary>
+        </member>
+        <member name="F:ImportExport5010_270.Loops.SegmentDTP.DTP02_DatTimFmtQual">
+            <summary>
+                Date format - D8=date, RD8=date range, DT=date-time
+            </summary>
+        </member>
+        <member name="M:ImportExport5010_270.Loops.SegmentDTP.ToDateTime">
+            <summary>
+                Returns a DateTime parsed from DTP03 per format qualifier in DTP02 (ex D8, DT, RD8).
+                For RD8 date ranges, returns just the starting date by default.
+                To get ending date, check IsRange then call overload with param of 2.
+            </summary>
+            <param name="datetimePart"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ImportExport5010_270.Loops.SegmentDTP.ToDateTime(System.Int32)">
+            <summary>
+                For RD8 dates, returns just the starting date for param of 1, end date for 2.
+                Can check IsRange to see if this overload is needed..
+            </summary>
+            <param name="datetimePart"></param>
+            <returns></returns>
+        </member>
+        <member name="T:ImportExport5010_270.Loops.SegmentEQ">
+            <summary>
+                Eligibility Inquiry Info
+            </summary>
+        </member>
+        <member name="F:ImportExport5010_270.Loops.SegmentEQ.EQ01_SvcTypCd">
+            <summary>
+                Service Type Code
+            </summary>
+        </member>
+        <member name="F:ImportExport5010_270.Loops.SegmentEQ.EQ02_CompMedProcID">
+            <summary>
+                Composite Medical Procedure ID
+            </summary>
+        </member>
+        <member name="F:ImportExport5010_270.Loops.SegmentEQ.EQ03_CovrgLvlCd">
+            <summary>
+                Coverage Level Code
+            </summary>
+        </member>
+        <member name="F:ImportExport5010_270.Loops.SegmentEQ.EQ04_InsTypCd">
+            <summary>
+                Insurance Type Code
+            </summary>
+        </member>
+        <member name="T:ImportExport5010_270.Loops.SegmentHI">
+            <summary>
+                270 segment: Healthcare Diagnosis Code
+            </summary>
+        </member>
+        <member name="T:ImportExport5010_270.Loops.SegmentHL">
+            <summary>
+                270 segment: Administrative Communications Contact
+            </summary>
+            <summary>
+                270 segment: Hierarchical Level Info
+            </summary>
+        </member>
+        <member name="T:ImportExport5010_270.Loops.SegmentIII">
+            <summary>
+                Eligibigility Inquiry Additional Info
+            </summary>
+        </member>
+        <member name="F:ImportExport5010_270.Loops.SegmentIII.III01_CodeListQualCd">
+            <summary>
+                Code List Qualifier
+            </summary>
+        </member>
+        <member name="F:ImportExport5010_270.Loops.SegmentIII.III02_IndustryCd">
+            <summary>
+                Industry Code
+            </summary>
+        </member>
+        <member name="T:ImportExport5010_270.Loops.SegmentINS">
+            <summary>
+                Insured Benefit
+            </summary>
+        </member>
+        <member name="F:ImportExport5010_270.Loops.SegmentINS.INS01_YNrespCode">
+            <summary>
+                Insured Indicator
+            </summary>
+        </member>
+        <member name="F:ImportExport5010_270.Loops.SegmentINS.INS02_IndivRelatCd">
+            <summary>
+                Insured Indicator
+            </summary>
+        </member>
+        <member name="F:ImportExport5010_270.Loops.SegmentINS.INS17_Number">
+            <summary>
+                Insured Indicator
+            </summary>
+        </member>
+        <member name="T:ImportExport5010_270.Loops.SegmentN3">
+            <summary>
+                270 segment: Street Address
+            </summary>
+        </member>
+        <member name="T:ImportExport5010_270.Loops.SegmentN4">
+            <summary>
+                270 segment: City, State, Zip
+            </summary>
+        </member>
+        <member name="M:ImportExport5010_270.Loops.SegmentN4.#ctor">
+            <summary>
+                Only used for non-USA
+            </summary>
+        </member>
+        <member name="T:ImportExport5010_270.Loops.SegmentNM1">
+            <summary>
+                270 segment: Individual or Organization Name
+            </summary>
+        </member>
+        <member name="F:ImportExport5010_270.Loops.SegmentNM1.NM101_EntityIDCode">
+            <summary>
+                Code indicating role of entity.
+            </summary>
+        </member>
+        <member name="F:ImportExport5010_270.Loops.SegmentNM1.NM102_EntityTypeQual">
+            <summary>
+                Person=1, Organization=2
+            </summary>
+        </member>
+        <member name="F:ImportExport5010_270.Loops.SegmentNM1.NM107_NameSuffix">
+            <summary>
+                Jr., Sr., III etc
+            </summary>
+        </member>
+        <member name="F:ImportExport5010_270.Loops.SegmentNM1.NM108_IDCodeQual">
+            <summary>
+                Qualifier gives numbering scheme for ID (SSN, NPI etc)
+            </summary>
+        </member>
+        <member name="F:ImportExport5010_270.Loops.SegmentNM1.NM109_IDCode">
+            <summary>
+                Entity Primary Identifier
+            </summary>
+        </member>
+        <member name="T:ImportExport5010_270.Loops.SegmentPRV">
+            <summary>
+                270 segment: Provider Information
+            </summary>
+        </member>
+        <member name="T:ImportExport5010_270.Loops.SegmentREF">
+            <summary>
+                270 segment: Reference Identification
+            </summary>
+        </member>
+        <member name="F:ImportExport5010_270.Loops.SegmentREF.REF01_RefIDQual">
+            <summary>
+                Qualifier gives numbering scheme for ID (SSN, Lic No etc)
+            </summary>
+        </member>
+        <member name="F:ImportExport5010_270.Loops.SegmentREF.REF02_RefID">
+            <summary>
+                Secondary ID number for entity.
+            </summary>
+        </member>
+        <member name="F:ImportExport5010_270.Loops.SegmentREF.REF03_Descrip">
+            <summary>
+                Description -- for state if license no..
+            </summary>
+        </member>
+        <member name="M:ImportExport5010_270.Loops.SegmentREF.#ctor">
+            <summary>
+                Reference ID related to REF02 number. Composite, only REF04-1,-2 available.
+                Only used in 24xx loops.
+            </summary>
+        </member>
+        <member name="T:ImportExport5010_270.Loops.SegmentSE">
+            <summary>
+                270 segment: Transaction Set Trailer - SE02 control number should match ST02.
+            </summary>
+        </member>
+        <member name="F:ImportExport5010_270.Loops.SegmentSE.SE01_NumInclSegments">
+            <summary></summary>
+        </member>
+        <member name="F:ImportExport5010_270.Loops.SegmentSE.SE02_TSControlNum">
+            <summary>Control Number</summary>
+        </member>
+        <member name="T:ImportExport5010_270.Loops.SegmentST">
+            <summary>
+                270 segment: Transaction Set Header.  ST01 should be '270'
+            </summary>
+        </member>
+        <member name="F:ImportExport5010_270.Loops.SegmentST.ST03_TSVersion">
+            <summary>
+                Overrides/duplicates the GS08 EDI version for processing convenience.
+            </summary>
+        </member>
+        <member name="T:ImportExport5010_270.Loops.SegmentTRN">
+            <summary>
+                Trace Number
+            </summary>
+        </member>
+        <member name="F:ImportExport5010_270.Loops.SegmentTRN.TRN01_TraceTypCod">
+            <summary>
+                Trace Type Code
+            </summary>
+        </member>
+        <member name="F:ImportExport5010_270.Loops.SegmentTRN.TRN02_RefID">
+            <summary>
+                Trace Number
+            </summary>
+        </member>
+        <member name="F:ImportExport5010_270.Loops.SegmentTRN.TRN03_OrigCoID">
+            <summary>
+                Assigning Entity (originating company) ID
+            </summary>
+        </member>
+        <member name="F:ImportExport5010_270.Loops.SegmentTRN.TRN04_RefID">
+            <summary>
+                Assigning Entity Additional ID
+            </summary>
+        </member>
+        <member name="T:ImportExport5010_270.SingleEligibilityInquiryBuilder">
+            <summary>
+                Helps decouple creating/adding loops from the order required in the linear loop list of
+                the actual end-result eligibility inquiry object. Simply create an adapter instance, then reference its loops --
+                internal loop
+                objects will be automatically created as needed on first access in the property 'gets' (lazy instantiation).  Only
+                exception is
+                lists/arrays of certain loops/aggregates -- those use an AddNew() paradigm.
+            </summary>
+        </member>
+        <member name="M:ImportExport5010_270.SingleEligibilityInquiryBuilder.#ctor">
+            <summary>
+                Default constructor -- all loops null, all collections empty.
+            </summary>
+        </member>
+        <member name="M:ImportExport5010_270.SingleEligibilityInquiryBuilder.#ctor(ImportExport5010_270.EligibilityInquiry)">
+            <summary>
+                Constructor for modifying an existing inquiry
+            </summary>
+        </member>
+        <member name="P:ImportExport5010_270.SingleEligibilityInquiryBuilder.AutoCreateLoopsOnFirstReference">
+            <summary>
+                Default is true when the no param constructor is used -- the fixed loops are created internally by lazy
+                instantiation
+                upon first reference in code at runtime. This means a null check will *create* the loop unless this property set to
+                false.
+                Defaults to false when builder constructor with param is used to create from an existing inquiry for further
+                modification, therefore safe to check for preexisting loops.
+            </summary>
+        </member>
+        <member name="P:ImportExport5010_270.SingleEligibilityInquiryBuilder.InterchangeHeader">
+            <summary>
+                Required. Holds ISA segment with interchange control number and submit date.
+            </summary>
+        </member>
+        <member name="P:ImportExport5010_270.SingleEligibilityInquiryBuilder.GroupHeader">
+            <summary>
+                Required. Holds GS segment with functional group control number and version.
+            </summary>
+        </member>
+        <member name="P:ImportExport5010_270.SingleEligibilityInquiryBuilder.TransactHeader">
+            <summary>Required Loop</summary>
+        </member>
+        <member name="P:ImportExport5010_270.SingleEligibilityInquiryBuilder.Loop2000A_SourceHL">
+            <summary>Required Loop</summary>
+        </member>
+        <member name="P:ImportExport5010_270.SingleEligibilityInquiryBuilder.Loop2100A_SourceName">
+            <summary>Required Loop</summary>
+        </member>
+        <member name="P:ImportExport5010_270.SingleEligibilityInquiryBuilder.Loop2000B_ReceiverHL">
+            <summary>Required Loop</summary>
+        </member>
+        <member name="P:ImportExport5010_270.SingleEligibilityInquiryBuilder.Loop2100B_ReceiverName">
+            <summary>Required Loop</summary>
+        </member>
+        <member name="P:ImportExport5010_270.SingleEligibilityInquiryBuilder.Loop2000C_SubscrHL">
+            <summary>Required Loop</summary>
+        </member>
+        <member name="P:ImportExport5010_270.SingleEligibilityInquiryBuilder.Loop2100C_SubscrName">
+            <summary>Required Loop</summary>
+        </member>
+        <member name="P:ImportExport5010_270.SingleEligibilityInquiryBuilder.Loop2110C_SubscrEligInquiryInfo_Loops">
+            <summary>
+                At least one required when the subscriber is the patient
+            </summary>
+        </member>
+        <member name="P:ImportExport5010_270.SingleEligibilityInquiryBuilder.Loop2110D_DependEligInquiryInfo_Loops">
+            <summary>
+                At least one required when the dependent is the patient
+            </summary>
+        </member>
+        <member name="M:ImportExport5010_270.SingleEligibilityInquiryBuilder.AddNewLoop2110C_SubscrEligInquiryInfo">
+            <summary>
+                Adds new empty Loop2110C_SubscrEligInquiryInfo to the existing Loop2110C_SubscrEligInquiryInfo list and returns a
+                reference to the new empty loop.
+            </summary>
+        </member>
+        <member name="M:ImportExport5010_270.SingleEligibilityInquiryBuilder.AddNewLoop2110D_DependEligInquiryInfo">
+            <summary>
+                Adds new empty Loop2110D_DependEligInquiryInfo to the existing Loop2110D_DependEligInquiryInfo list and returns a
+                reference to the new empty loop.
+            </summary>
+        </member>
+        <member name="M:ImportExport5010_270.SingleEligibilityInquiryBuilder.GetEligibilityInquiry">
+            <summary>
+                Collects defined (non-null) loops into proper order in a eligibility inquiry object it returns.
+                Throws an exception if structure is missing required loops.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:ImportExport5010_270.SyntaxValidation997.LoopModel270">
+            <summary>
+                Model for EDI validator to check segment presence and order within th ID-defined
+                data loops for 4010 270.
+            </summary>
+        </member>
+        <member name="T:ImportExport5010_270.SyntaxValidation997.StrictSegValidatorFactory">
+            <summary>
+                Manages creation and reuse of segment Validators for P837 Data Segments,
+                Note- does not include validators for the control segments
+            </summary>
+        </member>
+        <member name="M:ImportExport5010_270.SyntaxValidation997.StrictSegValidatorFactory.GetSegmentValidator(System.String)">
+            <summary>
+                Returns reference to the required type of segment validator in the internal cache,
+                creates and adds to cache if not already there (lazy instantiation). Returns null
+                when not a valid segment ID (or throw an exception?).
+            </summary>
+        </member>
+        <member name="M:ImportExport5010_270.SyntaxValidation997.StrictSegValidatorFactory.REFsegValidator.SetupREF01codes">
+            <summary>
+                Called only by constructor -- loads dictionary for REF01 qualifiers
+            </summary>
+        </member>
+        <member name="M:ImportExport5010_270.SyntaxValidation997.StrictSegValidatorFactory.NM1segValidator.DoDynamicConfig">
+            <summary>
+                Overrides default list of valid codes for NM108 based on the supplied NM101.
+            </summary>
+        </member>
+        <member name="M:ImportExport5010_270.SyntaxValidation997.StrictSegValidatorFactory.NM1segValidator.SetMandatory(System.Int32[])">
+            <summary>
+                Sets elements at supplied indexes to be Mandatory=true (all others false).
+            </summary>
+        </member>
+        <member name="M:ImportExport5010_270.SyntaxValidation997.StrictSegValidatorFactory.DTPsegValidator.DoDynamicConfig">
+            <summary>
+                Called by Check() so the constraints can be further restricted
+                before their checks are executed.
+            </summary>
+        </member>
+    </members>
+</doc>
