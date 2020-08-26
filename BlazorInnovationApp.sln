@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EdiService", "EdiService\Ed
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EdiServiceTestClient", "EdiServiceTestClient\EdiServiceTestClient.csproj", "{50A349A3-9D4A-474F-AFB5-FF51F9DA802C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Edi.Web", "Edi.Web\Edi.Web.csproj", "{28A068B5-B22C-4D79-BAB1-63D914A50010}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{50A349A3-9D4A-474F-AFB5-FF51F9DA802C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{50A349A3-9D4A-474F-AFB5-FF51F9DA802C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{50A349A3-9D4A-474F-AFB5-FF51F9DA802C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{28A068B5-B22C-4D79-BAB1-63D914A50010}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{28A068B5-B22C-4D79-BAB1-63D914A50010}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{28A068B5-B22C-4D79-BAB1-63D914A50010}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{28A068B5-B22C-4D79-BAB1-63D914A50010}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
