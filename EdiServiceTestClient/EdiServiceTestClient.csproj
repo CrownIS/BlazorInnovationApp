@@ -6,14 +6,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Protos\" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Protobuf Include="..\EdiService\Protos\edi.proto">
-      <Link>Protos\edi.proto</Link>
-    </Protobuf>
-    <Protobuf Include="..\EdiService\Protos\greet.proto" Link="Protos\greet.proto" GrpcServices="Client" />
+    <None Remove="Protos\edi.proto" />
+    <None Remove="Protos\greet.proto" />
   </ItemGroup>
 
   <ItemGroup>
@@ -23,6 +17,11 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Protobuf Include="Protos\edi.proto" GrpcServices="Client" />
+    <Protobuf Include="Protos\greet.proto" GrpcServices="Client" />
   </ItemGroup>
 
 </Project>
