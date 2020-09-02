@@ -1,50 +1,45 @@
 ﻿@page "/edivalidator"
 <h3>Edi Validator</h3>
 
-@*<div class="panel panel-default">
-        <div class="panel-heading">Hello World!</div>
-        <div class="panel-body">Panel Body</div>
-    </div>
+<EditForm Model="@ViewModel" OnSubmit="@FormSubmitted">
     <div class="row">
         <div class="col-md-6">
-            <div class="panel panel-default">
-                <div class="panel-body">Left Panel</div>
+            <div class="card">
+                <div class="card-header d-flex justify-content-between">
+                    <div class="text-left">Edi to Validate (paste into text area)</div>
+                    <div class="text-right">
+                        <input class="btn btn-primary" type="submit" value="Submit">
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="form-group">
+                        <InputTextArea @bind-Value="@ViewModel.EdiRequest" class="form-control"/>     
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <strong>Status: @Status</strong>
+                </div>
             </div>
         </div>
         <div class="col-md-6">
-            <div class="panel panel-default">
-                <div class="panel-body">Right Panel</div>
-            </div>
-        </div>
-    </div>*@
-
-<div class="row">
-    <div class="col-md-6">
-        <div class="card">
-            <div class="card-header">
-                Left Card Header
-            </div>
-            <div class="card-body">
-                Left Card Body
-            </div>
-            <div class="card-footer">
-                Left Card Footer
+            <div class="card">
+                <div class="card-header">
+                    Right Card Header
+                </div>
+                <div class="card-body">
+                    Right Card Body
+                </div>
             </div>
         </div>
     </div>
-    <div class="col-md-6">
-        <div class="card">
-            <div class="card-header">
-                Right Card Header
-            </div>
-            <div class="card-body">
-                Right Card Body
-            </div>
-        </div>
-    </div>
-</div>
-
+</EditForm>
 
 @code {
+    string Status = "Not submitted";
+    EdiValidatorViewModel ViewModel = new EdiValidatorViewModel();
 
+    void FormSubmitted()
+    {
+        Status = "Form submitted.";
+    }
 }
