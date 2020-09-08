@@ -19,11 +19,10 @@ namespace Edi.Web.Data
 
         public async Task<string> Validate(string payload)
         {
-            var channel = GrpcChannel.ForAddress("https://localhost:5001");
+            var channel = GrpcChannel.ForAddress("https://localhost:5001"); // TODO: Move to appSettings.json file.
             var client = new Validator.ValidatorClient(channel);
 
-            var request = new EdiValidationRequest() { Payload = "Edi to validate." };
-
+            var request = new EdiValidationRequest() { Payload = payload };
             var reply = await client.ValidateEdiAsync(request);
 
             return reply.Message;

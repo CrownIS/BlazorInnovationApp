@@ -20,7 +20,7 @@ namespace EdiService.Services
         {
             var output = new EdiValidationReply() 
             {
-                Message = "It's all good!"
+                Message = "It's all good!" // TODO: Implement actual validation using Edi Library.
             };
 
             return Task.FromResult(output);
