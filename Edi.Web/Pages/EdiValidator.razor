@@ -5,15 +5,20 @@
     <div class="row">
         <div class="col-md-6">
             <div class="card">
-                <div class="card-header d-flex justify-content-between">
-                    <div class="text-left">Edi to Validate (paste into text area)</div>
-                    <div class="text-right">
-                        <input class="btn btn-primary" type="submit" value="Submit">
-                    </div>
+                <div class="card-header">
+                    <div>Edi to Validate</div>
                 </div>
                 <div class="card-body">
                     <div class="form-group">
-                        <InputTextArea @bind-Value="@ViewModel.EdiRequest" class="form-control"/>     
+                        <InputTextArea @bind-Value="@ViewModel.EdiRequest" class="form-control" style="height: 300px;" placeholder="Paste in text or use the 'Choose File' button to open a file." />
+                    </div>
+                    <div class="form-group d-flex justify-content-between">
+                        <div class="text-left">
+                            <input class="btn btn-secondary" type="file" />
+                        </div>
+                        <div class="text-rigt">
+                            <input class="btn btn-primary" type="submit" value="Submit">
+                        </div>
                     </div>
                 </div>
                 <div class="card-footer">
@@ -24,10 +29,36 @@
         <div class="col-md-6">
             <div class="card">
                 <div class="card-header">
-                    Right Card Header
+                    Edi (Formatted)
                 </div>
                 <div class="card-body">
-                    Right Card Body
+                    <table class="table table-borderless table-striped">
+                        <tr>
+                            <td>
+                                Line 1
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Line 2
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Line 3
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Line 4
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Line 5
+                            </td>
+                        </tr>
+                    </table>
                 </div>
             </div>
         </div>
@@ -38,7 +69,7 @@
     string Status = "Not submitted";
     EdiValidatorViewModel ViewModel = new EdiValidatorViewModel();
 
-    void FormSubmitted()
+    async void FormSubmitted()
     {
         Status = "Form submitted.";
     }
