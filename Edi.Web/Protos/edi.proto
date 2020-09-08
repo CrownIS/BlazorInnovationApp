@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+option csharp_namespace = "EdiService";
+
+service Validator {
+	rpc ValidateEdi (EdiValidationRequest) returns (EdiValidationReply);
+}
+
+message EdiValidationRequest {
+	string payload = 1;
+}
+
+message EdiValidationReply {
+	string message = 1;
+}

@@ -1,4 +1,6 @@
 ﻿@page "/edivalidator"
+@inject Edi.Web.Data.EdiValidatorService ValidatorService
+
 <h3>Edi Validator</h3>
 
 <EditForm Model="@ViewModel" OnSubmit="@FormSubmitted">
@@ -71,6 +73,7 @@
 
     async void FormSubmitted()
     {
-        Status = "Form submitted.";
+        var reply = await ValidatorService.Validate("Edi to validate.");
+        Status = $"Form submitted: {reply}";
     }
 }
