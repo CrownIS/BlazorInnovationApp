@@ -1,5 +1,5 @@
 ﻿@page "/edivalidator"
-@inject Edi.Web.Data.EdiValidatorService ValidatorService
+@inherits EdiValidatorBase
 
 <h3>Edi Validator</h3>
 
@@ -68,14 +68,7 @@
 </EditForm>
 
 @code {
-    string Status = "Not submitted";
-    EdiValidatorViewModel ViewModel = new EdiValidatorViewModel();
 
-    async void FormSubmitted()
-    {
-        var reply = await ValidatorService.Validate("Edi to validate.");
-        Status = $"Form submitted: {reply}";
-    }
 
     // TODO: Add form validation.
 }
