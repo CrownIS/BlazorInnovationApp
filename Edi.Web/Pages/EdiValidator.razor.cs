@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Edi.Web.Pages
 {
-    public class EdiValidatorBase : ComponentBase
+    public partial class EdiValidator
     {
         [Inject]
         public EdiValidatorService ValidatorService { get; set; }
