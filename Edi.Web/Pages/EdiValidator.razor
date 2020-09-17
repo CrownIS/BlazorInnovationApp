@@ -17,8 +17,16 @@
                         <div class="text-left">
                             <input class="btn btn-secondary" type="file" />
                         </div>
-                        <div class="text-rigt">
-                            <input class="btn btn-primary" type="submit" value="Submit">
+                        <div class="text-right">
+                            <div class="form-check form-check-inline">
+                                <input @onchange="ValidationEngineSelection" class="form-check-input" type="radio" name="validationEngineOptions" id="ediLibraryValidationEngine" value="ediLibrary" checked>
+                                <label class="form-check-label" for="inlineRadio1">EDI Library</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input @onchange="ValidationEngineSelection" class="form-check-input" type="radio" name="validationEngineOptions" id="ediNationValidationEngine" value="ediNation">
+                                <label class="form-check-label" for="inlineRadio2">EdiNation</label>
+                            </div>
+                            <input class="btn btn-primary" type="submit" value="Validate">
                         </div>
                     </div>
                 </div>
@@ -30,7 +38,7 @@
         <div class="col-md-6">
             <div class="card">
                 <div class="card-header">
-                    Edi (Formatted)
+                    Validation Result
                 </div>
                 <div class="card-body">
                     <table class="table table-borderless table-striped">

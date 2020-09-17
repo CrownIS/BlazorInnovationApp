@@ -15,7 +15,22 @@ namespace Edi.Web.Pages
         public EdiValidatorService ValidatorService { get; set; }
 
         protected string Status = "Not submitted";
-        protected EdiValidatorViewModel ViewModel = new EdiValidatorViewModel();
+        protected EdiValidatorViewModel ViewModel = new EdiValidatorViewModel()
+        { 
+            ValidationEngine = ValidationEngineType.EdiLibrary
+        };
+
+        public void ValidationEngineSelection(ChangeEventArgs args)
+        {
+            if (args.Value.Equals("ediLibrary"))
+            {
+                ViewModel.ValidationEngine = ValidationEngineType.EdiLibrary;
+            }
+            else
+            {
+                ViewModel.ValidationEngine = ValidationEngineType.EdiNation;
+            }
+        }
 
         protected async Task FormSubmitted()
         {

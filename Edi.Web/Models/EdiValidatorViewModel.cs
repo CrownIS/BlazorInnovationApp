@@ -8,5 +8,7 @@ namespace Edi.Web.Models
     public class EdiValidatorViewModel
     {
         public string EdiRequest { get; set; }
+
+        public ValidationEngineType ValidationEngine { get; set; }
     }
 }
