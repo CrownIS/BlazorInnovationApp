@@ -1,9 +1,13 @@
-﻿using EdiService;
+﻿using EdiNationAPI.Standard;
+using EdiNationAPI.Standard.Http.Client;
+using EdiService;
 using Grpc.Net.Client;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace Edi.Web.Data
@@ -17,7 +21,7 @@ namespace Edi.Web.Data
 
         public ILogger<EdiValidatorService> Logger { get; }
 
-        public async Task<List<string>> Validate(string payload)
+        public async Task<List<string>> ValidateWithEdiLibrary(string payload)
         {
             var results = new List<string>();
 
@@ -28,7 +32,24 @@ namespace Edi.Web.Data
             var reply = await client.ValidateEdiAsync(request);
 
             results.Add(reply.Message);
-            results.Add("Ain't Blazer kewl?");
+            return results;
+        }
+
+        public async Task<List<string>> ValidateWithEdiNation(string payload)
+        {
+            var results = new List<string>();
+
+            string key = "760977dc931249c4b9d11a49f289adb2"; // TODO: Move to user secrets.
+            EdiNationAPIClient client = new EdiNationAPIClient(key);
+            var x12 = client.X12;
+
+            var payloadByteArray = Encoding.UTF8.GetBytes(payload);
+            var payloadMemorySteam = new MemoryStream(payloadByteArray);
+
+            var psuedoFile = new FileStreamInfo(payloadMemorySteam);
+            var x12Interchange = await x12.ReadAsync(psuedoFile, false, false, "utf-8", "model");
+            var opResult = await x12.ValidateAsync(false, null, false, false, "application/json", x12Interchange[0]);
+
 
             return results;
         }

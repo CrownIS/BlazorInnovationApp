@@ -15,10 +15,17 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
   </ItemGroup>
 
   <ItemGroup>
     <Protobuf Include="Protos\edi.proto" GrpcServices="Client" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="EdiNationAPI.Standard">
+      <HintPath>..\..\edination-sdk-dotnet\EdiNationAPI.Standard\bin\Debug\netstandard1.3\EdiNationAPI.Standard.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>

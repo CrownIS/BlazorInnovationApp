@@ -1,7 +1,9 @@
 ﻿using Grpc.Core;
+using ImportExport5010_270;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -18,10 +20,26 @@ namespace EdiService.Services
 
         public override Task<EdiValidationReply> ValidateEdi(EdiValidationRequest request, ServerCallContext context)
         {
+            EligibilityInquiryReader inquiryReader;
+            EligibilityInquiry inquiry;
+            string validationResult = "Edi is valid";
 
-            var output = new EdiValidationReply() 
+            try
             {
-                Message = "It's all good!" // TODO: Implement actual validation using Edi Library.
+                using (var sr = new StringReader(request.Payload))
+                {
+                    inquiryReader = new EligibilityInquiryReader(sr, EDIX12Core.UnexpectedSegmentHandling.ThrowException);
+                    inquiry = inquiryReader.ReadItem();
+                }
+            }
+            catch (Exception ex)
+            {
+                validationResult = ex.Message;
+            }
+
+            var output = new EdiValidationReply()
+            {
+                Message = validationResult
             };
 
             return Task.FromResult(output);
