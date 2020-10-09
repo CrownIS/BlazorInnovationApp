@@ -47,9 +47,12 @@ namespace Edi.Web.Data
             var payloadMemorySteam = new MemoryStream(payloadByteArray);
 
             var psuedoFile = new FileStreamInfo(payloadMemorySteam);
-            var x12Interchange = await x12.ReadAsync(psuedoFile, false, false, "utf-8", "model");
-            var opResult = await x12.ValidateAsync(false, null, false, false, "application/json", x12Interchange[0]);
+            var x12Interchange = await x12.ReadAsync(psuedoFile, false, false, "utf-8", null);
 
+            foreach (var item in x12Interchange[0].Result.Details)
+            {
+                results.Add(item.Message);
+            }
 
             return results;
         }
