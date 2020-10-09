@@ -34,9 +34,10 @@ namespace Edi.Web.Pages
 
         protected async Task FormSubmitted()
         {
-            var reply = await ValidatorService.Validate("Edi to validate.");
+            ViewModel.ValidationResults = await ValidatorService.Validate("Edi to validate.");
+
             Debug.WriteLine("Clicked ...");
-            Status = $"Form submitted: {reply}";
+            //Status = $"Form submitted: {reply}";
         }
     }
 }

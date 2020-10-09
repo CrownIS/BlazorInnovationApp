@@ -18,6 +18,7 @@ namespace EdiService.Services
 
         public override Task<EdiValidationReply> ValidateEdi(EdiValidationRequest request, ServerCallContext context)
         {
+
             var output = new EdiValidationReply() 
             {
                 Message = "It's all good!" // TODO: Implement actual validation using Edi Library.

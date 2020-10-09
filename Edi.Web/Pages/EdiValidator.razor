@@ -2,7 +2,8 @@
 
 <h3>Edi Validator</h3>
 
-<EditForm Model="@ViewModel" OnSubmit="@FormSubmitted">
+<EditForm Model="@ViewModel" OnValidSubmit="@FormSubmitted">
+    <DataAnnotationsValidator />
     <div class="row">
         <div class="col-md-6">
             <div class="card">
@@ -31,7 +32,8 @@
                     </div>
                 </div>
                 <div class="card-footer">
-                    <strong>Status: @Status</strong>
+                    @*<strong>Status: @Status</strong>*@
+                    <ValidationSummary />
                 </div>
             </div>
         </div>
@@ -41,41 +43,16 @@
                     Validation Result
                 </div>
                 <div class="card-body">
-                    <table class="table table-borderless table-striped">
-                        <tr>
-                            <td>
-                                Line 1
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                Line 2
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                Line 3
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                Line 4
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                Line 5
-                            </td>
-                        </tr>
+                    <table class="table table-striped">
+                        @foreach (var line in ViewModel.ValidationResults)
+                        {
+                            <tr scope="row">
+                                <td>@line</td>
+                            </tr>
+                        }
                     </table>
                 </div>
             </div>
         </div>
     </div>
 </EditForm>
-
-@code {
-
-
-    // TODO: Add form validation.
-}
