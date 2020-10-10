@@ -10,6 +10,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Edi.Web.Data;
+using Edi.Web.Models;
 
 namespace Edi.Web
 {
@@ -28,6 +29,9 @@ namespace Edi.Web
         {
             services.AddRazorPages();
             services.AddServerSideBlazor();
+
+            services.Configure<ServiceConfiguration>(Configuration.GetSection("ExternalServices"));
+
             services.AddSingleton<WeatherForecastService>();
             services.AddSingleton<EdiValidatorService>();
         }

@@ -1,8 +1,11 @@
-﻿using EdiNationAPI.Standard;
+﻿using Edi.Web.Models;
+using EdiNationAPI.Standard;
 using EdiNationAPI.Standard.Http.Client;
 using EdiService;
 using Grpc.Net.Client;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -14,18 +17,20 @@ namespace Edi.Web.Data
 {
     public class EdiValidatorService
     {
-        public EdiValidatorService(ILogger<EdiValidatorService> logger)
+        public EdiValidatorService(ILogger<EdiValidatorService> logger, IOptions<ServiceConfiguration> options)
         {
             Logger = logger;
+            ServiceConfig = options.Value;
         }
 
         public ILogger<EdiValidatorService> Logger { get; }
+        public ServiceConfiguration ServiceConfig { get; }
 
         public async Task<List<string>> ValidateWithEdiLibrary(string payload)
         {
             var results = new List<string>();
 
-            var channel = GrpcChannel.ForAddress("https://localhost:5001"); // TODO: Move to appSettings.json file.
+            var channel = GrpcChannel.ForAddress(ServiceConfig.EdiLibraryServiceUrl);
             var client = new Validator.ValidatorClient(channel);
 
             var request = new EdiValidationRequest() { Payload = payload };
@@ -39,8 +44,7 @@ namespace Edi.Web.Data
         {
             var results = new List<string>();
 
-            string key = "760977dc931249c4b9d11a49f289adb2"; // TODO: Move to user secrets.
-            EdiNationAPIClient client = new EdiNationAPIClient(key);
+            EdiNationAPIClient client = new EdiNationAPIClient(ServiceConfig.EdiNationsApiKey);
             var x12 = client.X12;
 
             var payloadByteArray = Encoding.UTF8.GetBytes(payload);
