@@ -25,8 +25,9 @@
 
   <ItemGroup>
     <Reference Include="EdiNationAPI.Standard">
-      <HintPath>..\..\edination-sdk-dotnet\EdiNationAPI.Standard\bin\Debug\netstandard1.3\EdiNationAPI.Standard.dll</HintPath>
+      <HintPath>lib\EdiNationAPI.Standard.dll</HintPath>
     </Reference>
   </ItemGroup>
+
 
 </Project>
