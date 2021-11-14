@@ -53,9 +53,18 @@ namespace Edi.Web.Data
             var psuedoFile = new FileStreamInfo(payloadMemorySteam);
             var x12Interchange = await x12.ReadAsync(psuedoFile, false, false, "utf-8", null);
 
-            foreach (var item in x12Interchange[0].Result.Details)
+            //(new System.Collections.Generic.ICollectionDebugView<EdiNationAPI.Standard.Models.X12Interchange>(x12Interchange).Items[0]).Result.Status
+            var status = x12Interchange[0].Result.Status;
+            if (status == "error")
             {
-                results.Add(item.Message);
+                foreach (var item in x12Interchange[0].Result.Details)
+                {
+                    results.Add(item.Message);
+                }
+            }
+            else
+            {
+                results.Add("EDI is valid.");
             }
 
             return results;
